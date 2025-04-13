@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, Routes, Route } from "react-router-dom";
 import { FaUsers, FaBoxOpen, FaClipboardList } from "react-icons/fa"; // Import the icons
+import AdminProductsPage from "./admin/products";
+import AddProductForm from "./admin/addProductForm";
 
 export default function AdminPage() {
   return (
@@ -29,10 +31,11 @@ export default function AdminPage() {
         </Link>
       </div>
 
-      <div className="h-full w-full bg-white rounded-md ">
+      <div className="h-full w-full bg-white rounded-md p-2">
         <Routes>
           <Route path="users" element={<h1>Users</h1>} />
-          <Route path="products" element={<h1>Products</h1>} />
+          <Route path="products" element={<AdminProductsPage />} />
+          <Route path="/products/addProduct" element={<AddProductForm />} />
           <Route path="orders" element={<h1>Orders</h1>} />
         </Routes>
       </div>
