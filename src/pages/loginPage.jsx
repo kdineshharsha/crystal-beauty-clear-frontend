@@ -1,14 +1,16 @@
 import React, { use, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   function handleLogin() {
+    setLoading(true);
     axios
       .post(import.meta.env.VITE_BACKEND_URL + "/api/user/login", {
         email: email,
@@ -24,6 +26,7 @@ export default function LoginPage() {
         } else {
           navigate("/");
         }
+        setLoading(false);
       })
       .catch((err) => {
         console.log("Login failed", err);
@@ -75,14 +78,14 @@ export default function LoginPage() {
               onClick={handleLogin}
               className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-lg transition duration-300  cursor-pointer"
             >
-              Log In
+              {loading ? "Loading..." : "Login"}
             </button>
           </div>
 
           <p className="mt-6 text-sm text-center text-gray-700">
-            Don’t have an account?{" "}
-            <span className="underline cursor-pointer hover:text-amber-500">
-              Sign up
+            Don’t have an account? &nbsp;
+            <span className="underline cursor-pointer text-blue-500 hover:text-amber-500">
+              <Link to="/register">Sign Up</Link>
             </span>
           </p>
         </div>

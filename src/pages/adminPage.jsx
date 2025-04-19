@@ -3,10 +3,11 @@ import { Link, Routes, Route } from "react-router-dom";
 import { FaUsers, FaBoxOpen, FaClipboardList } from "react-icons/fa"; // Import the icons
 import AdminProductsPage from "./admin/products";
 import AddProductForm from "./admin/addProductForm";
+import EditProductForm from "./admin/editProduct";
 
 export default function AdminPage() {
   return (
-    <div className="w-full h-screen bg-gray-300 flex">
+    <div className="w-full h-screen bg-gray-300 flex poppins-regular">
       <div className="h-full w-60 bg-gray-800 flex flex-col p-4">
         <Link
           to="/admin/users"
@@ -31,11 +32,13 @@ export default function AdminPage() {
         </Link>
       </div>
 
-      <div className="h-full w-full bg-white rounded-md p-2">
+      <div className="h-full w-full bg-white rounded-md p-2 overflow-auto">
         <Routes>
           <Route path="users" element={<h1>Users</h1>} />
           <Route path="products" element={<AdminProductsPage />} />
           <Route path="/products/addProduct" element={<AddProductForm />} />
+          <Route path="/products/editProduct" element={<EditProductForm />} />
+
           <Route path="orders" element={<h1>Orders</h1>} />
         </Routes>
       </div>
