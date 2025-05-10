@@ -1,29 +1,44 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function ProductCard(props) {
-  const product = props.product;
+export default function ProductCard({ product }) {
   return (
     <Link
-      to={"/overview/" + product.productId}
-      className="w-64 h-72 shadow-md rounded-lg bg-white flex flex-col p-2"
+      to={`/overview/${product.productId}`}
+      className="w-52 h-[21rem] bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-102"
     >
-      <img
-        src={product.image[0]}
-        alt={product.name}
-        className="aspect-3/2 object-cover  rounded-md overflow-hidden"
-      />
-      <div className="mt-2">
-        <h2 className="text-lg font-semibold">{product.name}</h2>
+      {/* Image */}
+      <div className="w-full aspect-square overflow-hidden">
+        <img
+          src={product.image[0]}
+          alt={product.name}
+          className="w-full h-full object-cover "
+        />
       </div>
-      <div className="mt-2 flex justify-between">
-        <p className="text-gray-600">${product.price.toFixed(2)}</p>
-        <p className="text-gray-600 line-through">
-          ${product.labeledPrice.toFixed(2)}
+
+      {/* Info */}
+      <div className="px-2 pt-2  flex-col justify-between h-[calc(100%-10rem)]">
+        <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+          {product.name}
+        </h2>
+        <p className="mt-2 text-sm text-gray-500 line-clamp-2">
+          {product.description}
         </p>
-      </div>
-      <div className="mt-2">
-        {/* <p className="text-gray-600">{product.description}</p> */}
+
+        {/* Prices */}
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-lg font-bold text-amber-600">
+            ${product.price.toFixed(2)}
+          </p>
+          {product.labeledPrice > product.price && (
+            <p className="text-sm text-gray-400 line-through">
+              ${product.labeledPrice.toFixed(2)}
+            </p>
+          )}
+        </div>
+
+        {/* Optional Description or Tag */}
+        {/* <p className="mt-2 text-sm text-gray-500 line-clamp-2">{product.description}</p> */}
       </div>
     </Link>
   );

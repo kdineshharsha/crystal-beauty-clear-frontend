@@ -32,7 +32,6 @@ function ProductPage() {
       ) : (
         <Loader />
       )}
-      <h1>Product</h1>
     </div>
   );
 }

@@ -1,13 +1,42 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useGoogleLogin } from "@react-oauth/google";
+import { FcGoogle } from "react-icons/fc";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: (response) => {
+      setLoading(true);
+      // console.log("Login successful", response);
+      axios
+        .post(import.meta.env.VITE_BACKEND_URL + "/api/user/google", {
+          accessToken: response.access_token,
+        })
+        .then((response) => {
+          console.log("Login successful", response.data);
+          toast.success("Login successful");
+          localStorage.setItem("token", response.data.token);
+          const user = response.data.user;
+          if (user.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
+          setLoading(false);
+        });
+    },
+
+    onError: (error) => {
+      console.log("Login failed", error);
+      toast.error("Login failed");
+    },
+  });
 
   function handleLogin() {
     setLoading(true);
@@ -79,6 +108,14 @@ export default function LoginPage() {
               className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-lg transition duration-300  cursor-pointer"
             >
               {loading ? "Loading..." : "Login"}
+            </button>
+
+            <button
+              onClick={() => loginWithGoogle()}
+              className="w-full flex items-center justify-center mt-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 rounded-lg transition duration-300 cursor-pointer"
+            >
+              <FcGoogle className="text-2xl mr-2" />
+              {loading ? "Loading" : " Login with Google"}
             </button>
           </div>
 
