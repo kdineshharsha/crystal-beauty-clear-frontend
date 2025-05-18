@@ -18,7 +18,7 @@ export default function ProductCard({ product }) {
 
       {/* Info */}
       <div className="px-2 pt-2  flex-col justify-between h-[calc(100%-10rem)]">
-        <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+        <h2 className="text-lg font-semibold text-secondary line-clamp-1">
           {product.name}
         </h2>
         <p className="mt-2 text-sm text-gray-500 line-clamp-2">
@@ -27,7 +27,7 @@ export default function ProductCard({ product }) {
 
         {/* Prices */}
         <div className="flex items-center justify-between mt-2">
-          <p className="text-lg font-bold text-amber-600">
+          <p className="text-lg font-bold text-accent">
             ${product.price.toFixed(2)}
           </p>
           {product.labeledPrice > product.price && (

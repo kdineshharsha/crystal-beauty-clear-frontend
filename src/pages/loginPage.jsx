@@ -4,11 +4,14 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: (response) => {
@@ -64,67 +67,115 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="h-screen w-full flex bg-[url('/login-bg.jpg')] bg-cover bg-center">
-      {/* Left Side Panel */}
-      <div className="w-1/2 h-full bg-amber-500 bg-opacity-70 flex items-center justify-center">
-        <h1 className="text-5xl font-bold text-black drop-shadow-md">
-          Welcome Back 💛
-        </h1>
+    <div className="h-screen w-full flex">
+      <div className="w-1/2 h-full  lg:flex bg-[url('/img3.jpeg')] bg-cover  hidden relative">
+        <div className="  w-full  absolute  "></div>
       </div>
-
-      {/* Right Side - Login Section */}
-      <div className="w-1/2 h-full flex items-center justify-center">
-        <div className="w-[400px] h-[500px] backdrop-blur-md bg-white/10 border border-white shadow-2xl rounded-2xl p-8">
-          <h2 className="text-2xl text-gray-900 font-semibold mb-6 text-center">
-            Login to your account
-          </h2>
-
-          {/* Login Fields */}
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="text-gray-800 text-sm mb-1 block">Email</label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-1 block">
-                Password
-              </label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </div>
-
-            <button
-              onClick={handleLogin}
-              className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-lg transition duration-300  cursor-pointer"
-            >
-              {loading ? "Loading..." : "Login"}
-            </button>
-
-            <button
-              onClick={() => loginWithGoogle()}
-              className="w-full flex items-center justify-center mt-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 rounded-lg transition duration-300 cursor-pointer"
-            >
-              <FcGoogle className="text-2xl mr-2" />
-              {loading ? "Loading" : " Login with Google"}
-            </button>
+      <div className="lg:w-1/2 w-full h-full flex justify-center items-center bg-[url('/blob2.svg')]  bg-cover bg-center px-4">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 transition-all duration-300 hover:shadow-pink-200">
+          {/* Logo */}
+          <div className="flex justify-center mb-4">
+            <img
+              src="/logo_sm.png"
+              alt="logo"
+              className="w-20 h-20 object-contain animate-pulse"
+            />
           </div>
 
-          <p className="mt-6 text-sm text-center text-gray-700">
-            Don’t have an account? &nbsp;
-            <span className="underline cursor-pointer text-blue-500 hover:text-amber-500">
-              <Link to="/register">Sign Up</Link>
-            </span>
-          </p>
+          {/* Headings */}
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-1">
+            Welcome
+          </h2>
+          <h3 className="text-xl font-semibold text-accent text-center mb-6">
+            Crystal Beauty Clear
+          </h3>
+
+          {/* Form */}
+          <form className="space-y-4">
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="Enter your Email"
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition pr-10"
+                />
+                <div
+                  className="absolute top-2.5 right-3 text-gray-500 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+            </div>
+
+            {/* Remember Me + Forgot */}
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 text-gray-600">
+                <input type="checkbox" className="form-checkbox text-accent" />
+                Remember Me
+              </label>
+              <a href="#" className="text-accent hover:underline">
+                Forgot Password?
+              </a>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="w-full bg-accent text-white py-2 rounded-lg hover:bg-accent-hover transition font-medium"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+            >
+              Login
+            </button>
+
+            {/* OR separator */}
+            <div className="flex items-center justify-center text-sm text-gray-400">
+              Or
+            </div>
+
+            {/* Google Login */}
+            <button
+              type="button"
+              className="w-full border border-gray-300 flex items-center justify-center gap-2 py-2 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => loginWithGoogle()}
+            >
+              <img
+                src="https://www.svgrepo.com/show/355037/google.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
+              Login with Google
+            </button>
+
+            {/* Create Account */}
+            <p className="text-center text-sm mt-4 text-gray-600">
+              Don’t have an account?{" "}
+              <a href="#" className="text-accent hover:underline font-medium">
+                <Link to="/register">Sign Up</Link>
+              </a>
+            </p>
+          </form>
         </div>
       </div>
     </div>

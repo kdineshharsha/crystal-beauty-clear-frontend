@@ -106,3 +106,10 @@
   font-weight: 900;
   font-style: italic;
 }
+
+@theme {
+  --color-primary: #fae8ff;
+  --color-secondary: #364153;
+  --color-accent: #f6339a; /* pink-500 */
+  --color-accent-hover: #e60076;
+}

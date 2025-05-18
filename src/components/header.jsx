@@ -1,60 +1,58 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { LuShoppingCart } from "react-icons/lu";
-
+import { FiUser } from "react-icons/fi";
 export default function Header() {
   return (
-    // <div className="w-full h-16 bg-gray-300 flex justify-center items-center">
-    //   <div className=" flex space-x-4 justify-evenly items-center">
-    //     <Link to="/">Home</Link>
-    //     <Link to="/products">Products</Link>
-    //     <Link to="/contacts">Contacts</Link>
-    //     <Link to="/reviews">Reviews</Link>
-    //     <Link to="/cart" className="absolute text-2xl right-8">
-    //       <LuShoppingCart />
-    //     </Link>
-    //   </div>
-    // </div>
+    <header className="w-full bg-white shadow-md  top-0 left-0 ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center h-full">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-30 object-cover absolute "
+          />
+        </div>
 
-    <header className="w-full h-16 bg-white shadow flex justify-between items-center px-6">
-      {/* Logo */}
-      <div className="h-32 overflow-hidden flex items-center justify-center">
-        <img src="/logo.png" alt="Logo" className="h-full  " />
-      </div>
+        {/* Navigation */}
+        <nav className="hidden md:flex space-x-6 font-medium text-gray-600">
+          <Link to="/" className="hover:text-pink-500 transition duration-300">
+            Home
+          </Link>
+          <Link
+            to="/products"
+            className="hover:text-pink-500 transition duration-300"
+          >
+            Products
+          </Link>
+          <Link
+            to="/contacts"
+            className="hover:text-pink-500 transition duration-300"
+          >
+            Contacts
+          </Link>
+          <Link
+            to="/reviews"
+            className="hover:text-pink-500 transition duration-300"
+          >
+            Reviews
+          </Link>
+        </nav>
 
-      {/* Navigation links */}
-      <nav className="flex space-x-6 text-gray-700 font-medium">
-        <Link
-          to="/"
-          className="hover:text-blue-600 transition-colors duration-200"
-        >
-          Home
-        </Link>
-        <Link
-          to="/products"
-          className="hover:text-blue-600 transition-colors duration-200"
-        >
-          Products
-        </Link>
-        <Link
-          to="/contacts"
-          className="hover:text-blue-600 transition-colors duration-200"
-        >
-          Contacts
-        </Link>
-        <Link
-          to="/reviews"
-          className="hover:text-blue-600 transition-colors duration-200"
-        >
-          Reviews
-        </Link>
-      </nav>
-
-      {/* Cart icon */}
-      <div className="text-2xl text-gray-700 hover:text-blue-600 transition-colors duration-200">
-        <Link to="/cart">
-          <LuShoppingCart />
-        </Link>
+        {/* Cart Icon */}
+        <div className="text-2xl text-gray-700 hover:text-pink-500 transition duration-300 relative  items-center hidden lg:flex ">
+          <Link to="/cart">
+            <LuShoppingCart />
+            {/* Optional: Badge */}
+            {/* <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs px-1.5 rounded-full">3</span> */}
+          </Link>
+          <Link to="/cart" className="ml-4">
+            <FiUser />
+            {/* Optional: Badge */}
+            {/* <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs px-1.5 rounded-full">3</span> */}
+          </Link>
+        </div>
       </div>
     </header>
   );

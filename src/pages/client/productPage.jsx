@@ -24,7 +24,7 @@ function ProductPage() {
   return (
     <div className="w-full h-full ">
       {productLoaded ? (
-        <div className="w-full h-full flex flex-wrap gap-4 p-2">
+        <div className="w-full h-full flex flex-wrap gap-4 p-2 bg-primary">
           {productList.map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}

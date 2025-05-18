@@ -24,7 +24,7 @@ export default function CartPage() {
   }, [cartLoaded]);
 
   return (
-    <div className="w-full h-full bg-[#FFF5EA] py-10 px-4 flex justify-center">
+    <div className="w-full  bg-[#FFF5EA] py-10 px-4 flex justify-center">
       <div className="w-full max-w-4xl space-y-6">
         {cart.map((item) => (
           <div
@@ -113,13 +113,13 @@ export default function CartPage() {
 
             <div className="flex justify-between text-xl font-bold text-gray-800">
               <span>Net Total</span>
-              <span className="text-amber-600">${getTotal().toFixed(2)}</span>
+              <span className="text-accent">${getTotal().toFixed(2)}</span>
             </div>
           </div>
         </div>
         <div className="w-full flex justify-end">
           <button
-            className="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-6 rounded-xl transition"
+            className="mt-4 bg-accent hover:bg-accent-hover text-white font-semibold py-2 px-6 rounded-xl transition"
             onClick={() => {
               navigate("/checkout", {
                 state: {

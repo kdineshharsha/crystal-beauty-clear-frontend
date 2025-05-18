@@ -5,10 +5,11 @@ import ProductPage from "./client/productPage";
 import ProductOverview from "./client/productOverview";
 import CartPage from "./client/cart";
 import CheckoutPage from "./client/checkout";
+import BottomNavbar from "../components/bottomNavbar";
 
 export default function HomePage() {
   return (
-    <div className="w-full h-screen max-h-screen bg-[#FFF5EA]">
+    <div className="w-full h-screen max-h-screen bg-primary">
       <Header />
       <div className="w-full h-[calc(100vh-64px)]">
         <Routes>
@@ -22,6 +23,7 @@ export default function HomePage() {
           <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
       </div>
+      <BottomNavbar />
     </div>
   );
 }
