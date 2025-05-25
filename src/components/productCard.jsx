@@ -5,7 +5,7 @@ export default function ProductCard({ product }) {
   return (
     <Link
       to={`/overview/${product.productId}`}
-      className="w-52 h-[21rem] bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-102"
+      className=" w-full min-w-40   bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-102"
     >
       {/* Image */}
       <div className="w-full aspect-square overflow-hidden">

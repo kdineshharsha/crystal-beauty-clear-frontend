@@ -1,59 +1,118 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import { LuShoppingCart } from "react-icons/lu";
 import { FiUser } from "react-icons/fi";
+import { RiShoppingBag4Line } from "react-icons/ri";
+import { PiHeartBold } from "react-icons/pi";
+import { FiMessageSquare } from "react-icons/fi";
+import UserData from "./userData";
+
 export default function Header() {
+  const navItems = [
+    { to: "/", label: "Home" },
+    { to: "/products", label: "Products" },
+    { to: "/contacts", label: "Contacts" },
+    { to: "/reviews", label: "Reviews" },
+  ];
+
+  const [Dropdown, setDropdown] = useState(false);
+  const token = localStorage.getItem("token");
+
   return (
-    <header className="w-full bg-white shadow-md  top-0 left-0 ">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center h-full">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="h-30 object-cover absolute "
-          />
-        </div>
+    <div className="w-full flex justify-center items-center top-0 sticky z-10 bg-secondary">
+      <header className="w-[90%] bg-white shadow-lg rounded-4xl h-12 my-4 backdrop-blur-md border border-gray-200 relative ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center h-full">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-30 object-cover absolute "
+            />
+          </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex space-x-6 font-medium text-gray-600">
-          <Link to="/" className="hover:text-pink-500 transition duration-300">
-            Home
-          </Link>
-          <Link
-            to="/products"
-            className="hover:text-pink-500 transition duration-300"
-          >
-            Products
-          </Link>
-          <Link
-            to="/contacts"
-            className="hover:text-pink-500 transition duration-300"
-          >
-            Contacts
-          </Link>
-          <Link
-            to="/reviews"
-            className="hover:text-pink-500 transition duration-300"
-          >
-            Reviews
-          </Link>
-        </nav>
+          {/* Navigation */}
+          <nav className="hidden md:flex space-x-6 font-medium text-gray-600">
+            {navItems.map((item, index) => (
+              <NavLink
+                key={index}
+                to={item.to}
+                end
+                className={({ isActive }) =>
+                  `transition duration-300 ${
+                    isActive
+                      ? "text-pink-500 font-semibold border-b-2 border-pink-500"
+                      : "hover:text-pink-400"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
 
-        {/* Cart Icon */}
-        <div className="text-2xl text-gray-700 hover:text-pink-500 transition duration-300 relative  items-center hidden lg:flex ">
-          <Link to="/cart">
-            <LuShoppingCart />
-            {/* Optional: Badge */}
-            {/* <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs px-1.5 rounded-full">3</span> */}
-          </Link>
-          <Link to="/cart" className="ml-4">
-            <FiUser />
-            {/* Optional: Badge */}
-            {/* <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs px-1.5 rounded-full">3</span> */}
-          </Link>
+          {/* Cart & User Icons */}
+          <div className="text-2xl text-gray-700 hidden lg:flex items-center space-x-4">
+            <NavLink
+              to="/cart"
+              className={({ isActive }) =>
+                `transition duration-300 ${
+                  isActive ? "text-pink-500" : "hover:text-pink-400"
+                }`
+              }
+            >
+              <LuShoppingCart />
+            </NavLink>
+            <NavLink
+              onClick={() => {
+                setDropdown(!Dropdown);
+                console.log(token);
+              }}
+              className={() =>
+                `transition duration-300 ${
+                  Dropdown ? "text-pink-500" : "hover:text-pink-400"
+                }`
+              }
+            >
+              <FiUser />
+            </NavLink>
+          </div>
         </div>
-      </div>
-    </header>
+        {/* Dropdown Menu */}
+        <div
+          className={`w-60 h-auto bg-white rounded-2xl absolute top-16 right-0 flex flex-col items-center p-4 shadow-lg transform transition-all duration-300 ease-out origin-top-right ${
+            Dropdown
+              ? "scale-100 opacity-100"
+              : "scale-95 opacity-0 pointer-events-none"
+          }`}
+        >
+          <UserData />
+          <hr className="bg-accent w-full mt-4" />
+          <div className="w-full mt-2 space-y-2">
+            <Link
+              to="/"
+              className="hover:text-pink-500 text-secondary transition duration-300 flex items-center space-x-2"
+            >
+              <RiShoppingBag4Line />
+              <span>My Orders</span>
+            </Link>
+            <Link
+              to="/"
+              className="hover:text-pink-500 text-secondary transition duration-300 flex items-center space-x-2"
+            >
+              <PiHeartBold />
+              <span>Wishlist</span>
+            </Link>
+            <Link
+              to="/"
+              className="hover:text-pink-500 text-secondary transition duration-300 flex items-center space-x-2"
+            >
+              <FiMessageSquare />
+              <span>Message Center</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+    </div>
   );
 }

@@ -132,7 +132,15 @@ export default function LoginPage() {
                 <input type="checkbox" className="form-checkbox text-accent" />
                 Remember Me
               </label>
-              <a href="#" className="text-accent hover:underline">
+              <a
+                href="#"
+                className="text-accent hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/reset");
+                }}
+              >
+                {/* <Link to="/reset"> */}
                 Forgot Password?
               </a>
             </div>

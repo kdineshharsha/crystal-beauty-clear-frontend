@@ -25,13 +25,13 @@ export default function AdminPage() {
       navigate("/login");
     } else {
       axios
-        .get("http://localhost:5000/api/user/current", {
+        .get("http://localhost:3000/api/user/current", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          if (response.data.role === "admin") {
+          if (response.data.user.role == "admin") {
             setUserValidated(true);
           } else {
             toast.error("You are not authorized to access this page");
