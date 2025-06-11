@@ -1,21 +1,41 @@
-export default function ProductSkeleton() {
+import React, { useState } from "react";
+
+export default function ImageSlider({ images }) {
+  const [activeImage, setActiveImage] = useState(images[0]);
+
   return (
-    <div className="w-full min-w-40 sm:w-64 h-[360px] rounded-2xl bg-white shadow-lg overflow-hidden relative animate-pulse flex flex-col gap-3 p-4">
-      {/* Image */}
-      <div className="h-36 bg-pink-100 rounded-lg"></div>
+    <div className="w-full h-full flex items-center justify-center bg-primary py-8 px-4">
+      <div className="flex flex-col-reverse md:flex-row items-center gap-6 bg-white p-6 rounded-2xl shadow-2xl max-w-5xl">
+        {/* Thumbnails */}
+        <div className="flex flex-row md:flex-col gap-4 bg-pink-100 p-4 rounded-lg shadow-lg">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              onClick={() => setActiveImage(image)}
+              className={`border-2 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
+                activeImage === image
+                  ? "border-accent scale-105 shadow-md"
+                  : "border-transparent opacity-70 hover:opacity-100"
+              }`}
+            >
+              <img
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className="w-20 h-16 md:w-24 md:h-20 object-cover"
+              />
+            </div>
+          ))}
+        </div>
 
-      {/* Title */}
-      <div className="h-4 bg-pink-200 rounded w-4/5"></div>
-
-      {/* Description */}
-      <div className="h-3 bg-pink-100 rounded w-full"></div>
-      <div className="h-3 bg-pink-100 rounded w-5/6"></div>
-
-      {/* Price */}
-      <div className="mt-auto h-5 bg-pink-300 rounded w-1/3"></div>
-
-      {/* Shimmer */}
-      <div className="absolute inset-0 animate-shimmer z-10 opacity-20 pointer-events-none rounded-2xl" />
+        {/* Main Image */}
+        <div className="w-full sm:w-[70%] max-h-[400px] aspect-square rounded-xl bg-secondary p-1 shadow-xl">
+          <img
+            src={activeImage}
+            alt="Main product"
+            className="w-full h-full object-contain rounded-lg"
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -172,3 +172,7 @@
   );
   background-size: 200% 100%;
 }
+
+img {
+  transition: all 0.4s ease;
+}

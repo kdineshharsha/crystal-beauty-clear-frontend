@@ -118,56 +118,6 @@ export default function AdminOrders() {
           </table>
           {modalIsDisplaying && (
             <div className="fixed top-0 left-0 bg-[#00000080]  w-full h-full  flex justify-center items-center ">
-              {/* <div className="w-100 max-h-140 h-auto bg-white relative border rounded-2xl ">
-                <div className="w-full h-25 bg-blue-100">
-                  <h1 className="text-sm font-bold  p-2">
-                    Order ID: {displayingOrder.orderId}
-                  </h1>
-                  <h1 className="text-sm font-bold  p-2">
-                    Order Date: {new Date(displayingOrder.date).toDateString()}
-                  </h1>
-                  <h1 className="text-sm font-bold  p-2">
-                    Order Status: {displayingOrder.status}
-                  </h1>
-                  <h1 className="text-sm font-bold  p-2">
-                    Order Total: {displayingOrder.total.toFixed(2)}
-                  </h1>
-                </div>
-                <div className="w-full h-115 max-h-115 ">
-                  {displayingOrder.billItems.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="w-full h-[100px] bg-white shadow-2xl my-[5px] flex justify-between items-center relative"
-                      >
-                        <img
-                          src={item.image}
-                          className="h-full aspect-square object-cover"
-                        />
-                        <div className="h-full max-w-[300px] w-[300px] overflow-hidden">
-                          <h1 className="text-xl font-bold">
-                            {item.productName}
-                          </h1>
-                          <h2 className="text-lg text-gray-500">
-                            LKR: {item.price.toFixed(2)}
-                          </h2>
-                          <h2 className="text-lg text-gray-500">
-                            Quantity: {item.quantity}
-                          </h2>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <button
-                  className="absolute size-8 rounded-full border border-red-700  flex justify-center items-center -top-4 -right-4 bg-white "
-                  onClick={() => {
-                    setModalIsDisplaying(false);
-                  }}
-                >
-                  <IoMdClose />
-                </button>
-              </div> */}
               <div className="w-100 max-h-150 bg-white rounded-xl p-4 relative">
                 <button
                   className="absolute size-8 rounded-full shadow-lg   flex justify-center items-center -top-4 -right-4 bg-white "

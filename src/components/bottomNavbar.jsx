@@ -11,7 +11,7 @@ const navItems = [
     label: "Contacts",
   },
   { to: "/cart", icon: <FiShoppingCart className="text-2xl" />, label: "Cart" },
-  { to: "/reviews", icon: <FiUser className="text-2xl" />, label: "Profile" },
+  { to: "/profile", icon: <FiUser className="text-2xl" />, label: "Profile" },
 ];
 
 export default function BottomNavbar() {

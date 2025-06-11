@@ -7,7 +7,7 @@ export default function ImageSlider(props) {
   //   console.log(props.images);
 
   return (
-    <div className="w-full h-full  bg-amber-500 flex items-center justify-center">
+    <div className="w-full h-full  bg-amber-300 flex items-center justify-center">
       <div className="bg-green-600 w-[70%] aspect-square relative">
         <img
           src={activeImage}

@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link, Routes, Route, useNavigate } from "react-router-dom";
-import { FaHome, FaUsers, FaBoxOpen, FaClipboardList } from "react-icons/fa"; // Import the icons
+import {
+  FaHome,
+  FaUsers,
+  FaBoxOpen,
+  FaClipboardList,
+  FaBullhorn,
+} from "react-icons/fa"; // Import the icons
 import AdminProductsPage from "./admin/products";
 import AddProductForm from "./admin/addProductForm";
 import EditProductForm from "./admin/editProduct";
 import AdminOrders from "./admin/adminOrders";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { FaTags } from "react-icons/fa6";
+import Promotions from "./admin/promotions";
+import AdBannerForm from "./admin/adBannerForm";
+import EditAdBanner from "./admin/editAdBanner";
+import FlashSaleAdmin from "../components/flashSaleAdmin";
+import Users from "./admin/users";
+import UserProfile from "./admin/userProfile";
 
 export default function AdminPage() {
   const [userValidated, setUserValidated] = useState(false);
@@ -16,6 +29,8 @@ export default function AdminPage() {
     { name: "Users", icon: <FaUsers />, to: "/admin/users" },
     { name: "Products", icon: <FaBoxOpen />, to: "/admin/products" },
     { name: "Orders", icon: <FaClipboardList />, to: "/admin/orders" },
+    { name: "Sales", icon: <FaTags />, to: "/admin/sales" },
+    { name: "Promotions", icon: <FaBullhorn />, to: "/admin/promo" },
   ];
 
   useEffect(() => {
@@ -79,13 +94,17 @@ export default function AdminPage() {
         <div className="h-full w-full bg-white rounded-md p-2 overflow-auto">
           <div className="w-full h-15 bg-amber-400 flex"></div>
           <Routes>
-            <Route path="users" element={<h1>Users</h1>} />
+            <Route path="users" element={<Users />} />
             <Route path="products" element={<AdminProductsPage />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="sales" element={<FlashSaleAdmin />} />
+            <Route path="promo" element={<Promotions />} />
 
             <Route path="/products/addProduct" element={<AddProductForm />} />
             <Route path="/products/editProduct" element={<EditProductForm />} />
-
+            <Route path="/promo/addBanner" element={<AdBannerForm />} />
+            <Route path="/promo/editBanner/" element={<EditAdBanner />} />
+            <Route path="users/:userEmail" element={<UserProfile />} />
             <Route path="orders" element={<h1>Orders</h1>} />
           </Routes>
         </div>

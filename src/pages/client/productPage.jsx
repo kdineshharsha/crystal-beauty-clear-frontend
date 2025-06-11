@@ -3,7 +3,8 @@ import axios from "axios";
 import Loader from "../../components/loader";
 import ProductCard from "../../components/productCard";
 import CatalogMagic from "../testing";
-import ProductSkeleton from "../testing";
+import ProductSkeleton from "../../components/productSkeletion";
+
 function ProductPage() {
   const [productList, setProductList] = useState([]);
   const [productLoaded, setProductLoaded] = useState(false);
@@ -13,6 +14,7 @@ function ProductPage() {
     if (!productLoaded) {
       axios
         .get(import.meta.env.VITE_BACKEND_URL + "/api/product/")
+
         .then((res) => {
           setProductList(res.data);
           setProductLoaded(true);

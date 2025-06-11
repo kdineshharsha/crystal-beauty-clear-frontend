@@ -45,7 +45,7 @@ export default function EditProductForm() {
         result = locationData.state.image;
       }
 
-      console.log(result);
+      console.log("result", result);
       // return;
 
       const altNamesInArray = altNames.split(",");

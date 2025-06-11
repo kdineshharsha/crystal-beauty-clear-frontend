@@ -4,6 +4,7 @@ import AdvertisementBanner from "../../components/advertisementBanner";
 import WhatsNew from "../../components/whatsNew";
 import Footer from "../../components/footer";
 import FlashSale from "../../components/flashSale";
+import { Link } from "react-router-dom";
 
 const categories = [
   { id: 1, title: "LIPS", image: "/src/assets/lips.jpeg" },
@@ -39,7 +40,7 @@ export default function MainPage() {
     }
   }, [currentIndex]);
   return (
-    <div className="w-full h-full max-h-screen bg-primary">
+    <div className="w-full  bg-primary relative ">
       <AdvertisementBanner />
       <Trending />
       <WhatsNew />
@@ -96,6 +97,16 @@ export default function MainPage() {
       </div>
       <FlashSale />
       <Footer />
+      <div className="fixed md:bottom-6 md:right-6 bottom-20 right-6 z-50 p-2 bg-white rounded-full shadow-lg">
+        <Link to="whatsapp://send?phone=+94752552137&text=Hello%20Crystal%20Beauty%20Clear!">
+          {" "}
+          <img
+            src="/whatsapp_logo.png"
+            alt=""
+            className="size-10 md:size-12 "
+          />
+        </Link>
+      </div>
     </div>
   );
 }

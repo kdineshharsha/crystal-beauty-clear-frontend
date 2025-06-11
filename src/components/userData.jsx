@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
 export default function UserData() {
   const [user, setUser] = useState(null);
   const token = localStorage.getItem("token");
@@ -27,13 +29,15 @@ export default function UserData() {
 
   return user ? (
     <>
-      <div className="flex mb-4 w-full items-center justify-start">
-        <img src="/user.png" alt="" className="size-12" />
-        <div className="ml-2 overflow-y-hidden">
-          <p className="text-gray-500 text-sm">Welcome back,</p>
-          <p className="font-semibold overflow-">{user.firstName}</p>
+      <Link to="/profile" className="w-full">
+        <div className="flex mb-4 w-full items-center justify-start">
+          <img src="/user.png" alt="" className="size-12" />
+          <div className="ml-2 overflow-y-hidden">
+            <p className="text-gray-500 text-sm">Welcome back,</p>
+            <p className="font-semibold overflow-">{user.firstName}</p>
+          </div>
         </div>
-      </div>
+      </Link>
       <button
         onClick={() => {
           localStorage.removeItem("token");

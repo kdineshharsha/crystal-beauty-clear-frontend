@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "./loader";
 import ProductCard from "./productCard";
-import ProductSkeleton from "../pages/testing";
+import ProductSkeleton from "./productSkeletion";
 
 export default function FlashSale() {
   const [productList, setProductList] = useState([]);
