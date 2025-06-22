@@ -1,97 +1,134 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import axios from "axios";
-import toast from "react-hot-toast";
 
-export default function FlashSaleAdmin() {
+const FlashSaleAdmin = () => {
+  const { register, handleSubmit, reset } = useForm();
   const [products, setProducts] = useState([]);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!loaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/product")
-        .then((res) => {
-          setProducts(res.data);
-          setLoaded(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Failed to load products");
-        });
-    }
-  }, [loaded]);
+    // Fetch all products
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/product")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
-  const toggleFlashSale = async (productId, currentStatus) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("You're not logged in");
-      return;
-    }
-
+  const onSubmit = async (data) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/product/${productId}`,
-        { flashSale: !currentStatus },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      toast.success("Flash Sale status updated");
-      setLoaded(false); // Reload the product list
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update Flash Sale status");
+      const payload = {
+        title: data.title,
+        saleType: data.saleType,
+        discountType: data.discountType,
+        discountValue: parseFloat(data.discountValue),
+        startDate: data.startDate,
+        endDate: data.endDate,
+        products: data.products,
+      };
+
+      await axios.post("http://localhost:3000/api/sale", payload);
+      alert("Sale created successfully!");
+      reset();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create sale");
     }
   };
 
   return (
-    <div className="p-4 max-w-screen-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Flash Sale Manager</h2>
-      {loaded ? (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-white shadow-lg rounded-lg">
-            <thead className="bg-gray-100 text-left text-gray-600">
-              <tr>
-                <th className="p-3 border-b">Product</th>
-                <th className="p-3 border-b">Price</th>
-                <th className="p-3 border-b">Flash Sale</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              {products.map((product) => (
-                <tr key={product._id} className="hover:bg-gray-50">
-                  <td className="p-3 border-b">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={product.image?.[0]}
-                        alt={product.name}
-                        className="w-12 h-12 object-cover rounded"
-                      />
-                      <span>{product.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-3 border-b">₹{product.price}</td>
-                  <td className="p-3 border-b">
-                    <label className="inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={product.flashSale}
-                        onChange={() =>
-                          toggleFlashSale(product._id, product.flashSale)
-                        }
-                        className="sr-only peer"
-                      />
-                      <div className="w-11 h-6 bg-gray-300 peer-checked:bg-green-500 rounded-full peer transition-all duration-300"></div>
-                    </label>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-6 mt-10">
+      <h2 className="text-2xl font-bold mb-4">Create New Sale</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Sale Type */}
+        {/* Sale Type */}
+        <div>
+          <label className="block font-medium mb-1">Sale Type</label>
+          <select
+            {...register("saleType", { required: true })}
+            className="w-full border px-3 py-2 rounded"
+          >
+            <option value="">-- Select Type --</option>
+            <option value="flash">Flash Sale</option>
+            <option value="11:11">11:11 Sale</option>
+            <option value="weekly">Weekly Sale</option>
+          </select>
         </div>
-      ) : (
-        <div className="text-gray-500">Loading products...</div>
-      )}
+
+        {/* Discount */}
+        <div>
+          <label className="block font-medium mb-1">Discount %</label>
+          <input
+            type="number"
+            step="0.1"
+            min="1"
+            max="99"
+            {...register("discountValue", { required: true })}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Products */}
+        <div>
+          <label className="block font-medium mb-1">Products</label>
+          <select
+            {...register("products", { required: true })}
+            multiple
+            className="w-full border px-3 py-2 rounded h-32"
+          >
+            {products.map((product) => (
+              <option key={product._id} value={product._id}>
+                {product.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500 mt-1">
+            Hold Ctrl/Command to select multiple.
+          </p>
+        </div>
+
+        {/* Discount */}
+        <div>
+          <label className="block font-medium mb-1">Discount %</label>
+          <input
+            type="number"
+            step="0.1"
+            min="1"
+            max="99"
+            {...register("discount", { required: true })}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        {/* Date Range */}
+        <div className="flex gap-4">
+          <div className="w-1/2">
+            <label className="block font-medium mb-1">Start Date</label>
+            <input
+              type="date"
+              {...register("startDate", { required: true })}
+              className="w-full border px-3 py-2 rounded"
+            />
+          </div>
+          <div className="w-1/2">
+            <label className="block font-medium mb-1">End Date</label>
+            <input
+              type="date"
+              {...register("endDate", { required: true })}
+              className="w-full border px-3 py-2 rounded"
+            />
+          </div>
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Create Sale
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default FlashSaleAdmin;

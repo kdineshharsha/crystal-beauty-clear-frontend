@@ -1,9 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Loader from "../../components/loader";
 import { IoMdClose } from "react-icons/io";
 import toast from "react-hot-toast";
-import TestModal from "../../components/test_modal";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -11,20 +10,23 @@ export default function AdminOrders() {
   const [modalIsDisplaying, setModalIsDisplaying] = useState(false);
   const [displayingOrder, setDisplayingOrder] = useState(null);
 
+  // Pagination and search states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
   useEffect(() => {
     if (!loaded) {
       const token = localStorage.getItem("token");
       axios
         .get(import.meta.env.VITE_BACKEND_URL + "/api/order", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
           setOrders(res.data);
-          console.log(res.data);
           setLoaded(true);
-        });
+        })
+        .catch(() => toast.error("Failed to load orders"));
     }
   }, [loaded]);
 
@@ -33,89 +35,218 @@ export default function AdminOrders() {
     axios
       .put(
         import.meta.env.VITE_BACKEND_URL + "/api/order/" + orderId,
-        {
-          status: status,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       .then(() => {
-        // console.log(res.data);
         toast.success("Order status updated successfully");
         setLoaded(false);
-      });
+      })
+      .catch(() => toast.error("Failed to update status"));
+  }
+
+  // Filter orders by name, orderId, or email
+  const filteredOrders = useMemo(() => {
+    if (!searchTerm.trim()) return orders;
+    return orders.filter((order) => {
+      const term = searchTerm.toLowerCase();
+      return (
+        order.name.toLowerCase().includes(term) ||
+        order.orderId.toLowerCase().includes(term) ||
+        order.email.toLowerCase().includes(term)
+      );
+    });
+  }, [orders, searchTerm]);
+
+  // Pagination logic
+  const pageCount = Math.ceil(filteredOrders.length / pageSize);
+  const paginatedOrders = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredOrders.slice(start, start + pageSize);
+  }, [filteredOrders, currentPage]);
+
+  // Export filtered orders to CSV
+  function exportToCSV() {
+    const headers = [
+      "Order ID",
+      "Customer",
+      "Email",
+      "Phone",
+      "Address",
+      "Status",
+      "Total",
+      "Date",
+    ];
+    const rows = filteredOrders.map((o) => [
+      o.orderId,
+      o.name,
+      o.email,
+      o.phoneNumber,
+      o.address,
+      o.status,
+      o.total,
+      new Date(o.date).toLocaleDateString(),
+    ]);
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers, ...rows]
+        .map((row) => row.map((v) => `"${v}"`).join(","))
+        .join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "orders.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   return (
-    <div className="w-full h-full p-4 ">
+    <div className="w-full h-full p-6">
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+        {/* Left: Title */}
+        <h2 className="text-3xl font-bold text-gray-800 flex-shrink-0">
+          Order Management
+        </h2>
+        <div className="flex flex-col sm:flex-row gap-3">
+          {" "}
+          {/* Middle: Search Input */}
+          <input
+            type="text"
+            placeholder="Search by Name, Order ID, or Email"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="flex-grow max-w-md border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {/* Right: Export Button */}
+          <button
+            onClick={exportToCSV}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-sm text-sm flex-shrink-0"
+            title="Export filtered orders to CSV"
+          >
+            Export CSV
+          </button>
+        </div>
+      </div>
+
       {loaded ? (
-        <div className="w-full h-full rounded-lg overflow-x-auto ">
-          <table className="w-full table-auto border-collapse shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-gray-600 text-white text-sm uppercase">
-              <tr>
-                <th className="px-4 py-3 text-left border-b">Order ID</th>
-                <th className="px-4 py-3 text-left border-b">Customer</th>
-                <th className="px-4 py-3 text-left border-b">Email</th>
-                <th className="px-4 py-3 text-left border-b">Phone</th>
-                <th className="px-4 py-3 text-left border-b">Address</th>
-                <th className="px-4 py-3 text-left border-b">Status</th>
-                <th className="px-4 py-3 text-left border-b">Total</th>
-                <th className="px-4 py-3 text-left border-b">Date</th>
-                <th className="px-4 py-3 text-left border-b">Action</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-800 text-sm">
-              {orders.map((order, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-200 transition duration-200 cursor-pointer"
-                  // onClick={() => {
-                  //   setModalIsDisplaying(true);
-                  //   setDisplayingOrder(order);
-                  // }}
-                >
-                  <td className="px-4 py-3 border-b">{order.orderId}</td>
-                  <td className="px-4 py-3 border-b">{order.name}</td>
-                  <td className="px-4 py-3 border-b">{order.email}</td>
-                  <td className="px-4 py-3 border-b">{order.phoneNumber}</td>
-                  <td className="px-4 py-3 border-b">{order.address}</td>
-                  <td className="px-4 py-3 border-b">
-                    <select
-                      value={order.status}
-                      onChange={(e) => {
-                        changeOrderStatus(order.orderId, e.target.value);
-                        console.log(e.target.value);
-                      }}
+        <>
+          <div className="overflow-x-auto rounded-xl shadow ring-1 ring-gray-200 bg-white">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  {[
+                    "Order ID",
+                    "Customer",
+                    "Email",
+                    "Phone",
+                    "Address",
+                    "Status",
+                    "Total",
+                    "Date",
+                    "Action",
+                  ].map((header) => (
+                    <th
+                      key={header}
+                      className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                     >
-                      <option value="Pending">Pending</option>
-                      <option value="Processing">Processing</option>
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
-                  </td>
-                  <td className="px-4 py-3 border-b">${order.total}</td>
-                  <td className="px-4 py-3 border-b">
-                    {new Date(order.date).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 border-b">
-                    <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-                      onClick={() => {
-                        setModalIsDisplaying(true);
-                        setDisplayingOrder(order);
-                      }}
-                    >
-                      View
-                    </button>
-                  </td>
+                      {header}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100 text-sm text-gray-800">
+                {paginatedOrders.map((order, idx) => (
+                  <tr
+                    key={idx}
+                    className="hover:bg-gray-50 transition duration-150 cursor-pointer"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap font-mono">
+                      {order.orderId}
+                    </td>
+                    <td className="px-6 py-4">{order.name}</td>
+                    <td className="px-6 py-4">{order.email}</td>
+                    <td className="px-6 py-4">{order.phoneNumber}</td>
+                    <td className="px-6 py-4 max-w-xs truncate">
+                      {order.address}
+                    </td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={order.status}
+                        onChange={(e) =>
+                          changeOrderStatus(order.orderId, e.target.value)
+                        }
+                        className="border rounded px-2 py-1 text-sm"
+                      >
+                        {[
+                          "Pending",
+                          "Processing",
+                          "Cancelled",
+                          "Shipped",
+                          "Delivered",
+                        ].map((status) => (
+                          <option key={status} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-6 py-4">${order.total.toFixed(2)}</td>
+                    <td className="px-6 py-4">
+                      {new Date(order.date).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm shadow"
+                        onClick={() => {
+                          setModalIsDisplaying(true);
+                          setDisplayingOrder(order);
+                        }}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="mt-4 flex justify-center gap-2 flex-wrap">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => p - 1)}
+              className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            {[...Array(pageCount).keys()].map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page + 1)}
+                className={`px-3 py-1 rounded ${
+                  currentPage === page + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                {page + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === pageCount || pageCount === 0}
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+
+          {/* Modal */}
           {modalIsDisplaying && (
             <div className="fixed top-0 left-0 bg-[#00000080]  w-full h-full  flex justify-center items-center ">
               <div className="w-100 max-h-150 bg-white rounded-xl p-4 relative">
@@ -231,12 +362,10 @@ export default function AdminOrders() {
               </div>
             </div>
           )}
-        </div>
+        </>
       ) : (
         <Loader />
       )}
     </div>
   );
 }
-
-//974236659511-bfpauu76kb4hidieitjqqq7kmkuvfced.apps.googleusercontent.com

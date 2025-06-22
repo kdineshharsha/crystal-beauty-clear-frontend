@@ -12,13 +12,16 @@ import MainPage from "./client/mainPage";
 import Profile from "./client/profile";
 import Order from "./client/order";
 import Contact from "./client/contact";
+import Wishlist from "./client/wishlist";
+import Settings from "./client/settings";
+import EditProfile from "./client/edit-profile";
 
 export default function HomePage() {
   return (
-    <div className="w-full mb-16 h-full  bg-primary ">
+    <div className="w-full  mb-16 h-full  bg-primary ">
       <Header />
 
-      <div className="w-full h-screen ">
+      <div className="w-full  ">
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/products" element={<ProductPage />} />
@@ -30,6 +33,9 @@ export default function HomePage() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Order />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings/edit-profile" element={<EditProfile />} />
         </Routes>
       </div>
       <BottomNavbar />

@@ -29,7 +29,7 @@ export default function AdvertisementBanner() {
 
   return (
     <div
-      className="relative bg-blue-300 w-full -xl mx-auto overflow-hidden rounded-2xl shadow-lg lg:mt-10 mt-5"
+      className="relative bg-blue-300 w-full  mx-auto overflow-hidden  shadow-lg object-cover "
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

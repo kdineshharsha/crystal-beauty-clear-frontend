@@ -90,7 +90,7 @@ export default function Order() {
               </div>
 
               <div className="text-sm text-gray-700 mb-1">
-                <strong>Total:</strong> ₹{order.total}
+                <strong>Total:</strong> Rs.{order.total}
               </div>
               <div className="text-sm text-gray-500 mb-4">
                 <strong>Date:</strong>{" "}
@@ -118,7 +118,7 @@ export default function Order() {
                           {item.productName} × {item.quantity}
                         </span>
                         <span className="text-xs text-gray-500">
-                          ₹{item.price}
+                          Rs.{item.price}
                         </span>
                       </div>
                     </li>

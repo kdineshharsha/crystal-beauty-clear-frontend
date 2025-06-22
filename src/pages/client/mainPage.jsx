@@ -5,6 +5,7 @@ import WhatsNew from "../../components/whatsNew";
 import Footer from "../../components/footer";
 import FlashSale from "../../components/flashSale";
 import { Link } from "react-router-dom";
+import ProductCategory from "../../components/productCategory";
 
 const categories = [
   { id: 1, title: "LIPS", image: "/src/assets/lips.jpeg" },
@@ -44,6 +45,44 @@ export default function MainPage() {
       <AdvertisementBanner />
       <Trending />
       <WhatsNew />
+      {/* <ProductCategory
+        title="Lip Collection"
+        buttonText="Shop Lips"
+        buttonLink="/products?category=lips"
+        category="lips"
+      /> */}
+      <ProductCategory
+        title="Nail Collection"
+        buttonText="Shop Nails"
+        buttonLink="/products?category=nails"
+        category="nail"
+      />
+      <ProductCategory
+        title="Face Collection"
+        buttonText="Shop Face"
+        buttonLink="/products?category=face"
+        category="face"
+      />
+
+      <ProductCategory
+        title="Skin Care Collection"
+        buttonText="Shop Skin care"
+        buttonLink="/products?category=skin"
+        category="skincare"
+      />
+      <ProductCategory
+        title="Eye Collection"
+        buttonText="Shop Eyes"
+        buttonLink="/products?category=eye"
+        category="eye"
+      />
+      <ProductCategory
+        title="Fragreance Collection"
+        buttonText="Shop Fragrance"
+        buttonLink="/products?category=fragrance"
+        category="fragrance"
+      />
+
       {/* Shop by category */}
       <div className="w-full bg-white py-10">
         <div className="max-w-7xl mx-auto px-4">

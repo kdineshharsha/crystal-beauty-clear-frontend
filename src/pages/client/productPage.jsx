@@ -37,7 +37,7 @@ function ProductPage() {
   }
 
   return (
-    <div className="w-full   p-4 ">
+    <div className="w-full   md:p-8 p-4">
       <div className="w-full h-16 flex justify-center items-center ">
         <input
           value={search}
@@ -64,7 +64,7 @@ function ProductPage() {
         </button>
       </div>
       {productLoaded ? (
-        <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-4">
+        <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  md:gap-8 gap-4 ">
           {productList.map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
