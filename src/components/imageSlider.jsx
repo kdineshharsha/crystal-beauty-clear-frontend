@@ -4,7 +4,7 @@ export default function ImageSlider({ images }) {
   const [activeImage, setActiveImage] = useState(images[0]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-primary py-8 px-4">
+    <div className="w-full h-full flex items-center justify-center bg-white py-8 px-4">
       <div className="flex flex-col-reverse md:flex-row items-center gap-6 bg-white p-6 rounded-2xl shadow-2xl max-w-5xl">
         {/* Thumbnails */}
         <div className="flex flex-row md:flex-col gap-4 bg-pink-100 p-4 rounded-lg shadow-lg">

@@ -21,6 +21,7 @@ import UserProfile from "./admin/userProfile";
 import toast from "react-hot-toast";
 import axios from "axios";
 import AdminDashboard from "./admin/dashboard";
+import Sales from "./admin/sales";
 
 export default function AdminPage() {
   const [userValidated, setUserValidated] = useState(false);
@@ -102,7 +103,7 @@ export default function AdminPage() {
           <Route path="users" element={<Users />} />
           <Route path="products" element={<AdminProductsPage />} />
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="sales" element={<FlashSaleAdmin />} />
+          <Route path="sales" element={<Sales />} />
           <Route path="promo" element={<Promotions />} />
           <Route path="/products/addProduct" element={<AddProductForm />} />
           <Route path="/products/editProduct" element={<EditProductForm />} />

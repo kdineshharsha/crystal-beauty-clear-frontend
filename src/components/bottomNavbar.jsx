@@ -16,7 +16,7 @@ const navItems = [
 
 export default function BottomNavbar() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md  md:hidden z-10">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_0_20px_rgba(0,0,0,0.1)] backdrop-blur-md md:hidden z-10">
       <div className="flex justify-between items-center px-6 py-2 text-gray-600">
         {navItems.map((item, index) => (
           <NavLink

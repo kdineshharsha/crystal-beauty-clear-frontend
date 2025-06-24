@@ -15,7 +15,7 @@ export default function Header() {
     { to: "/", label: "Home" },
     { to: "/products", label: "Products" },
     { to: "/contacts", label: "Contacts" },
-    { to: "/reviews", label: "About Us" },
+    { to: "/about", label: "About Us" },
   ];
 
   const [Dropdown, setDropdown] = useState(false);

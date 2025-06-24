@@ -24,7 +24,7 @@ export default function Trending() {
   }, [productLoaded]);
 
   return (
-    <div className="w-full   py-10 md:px-4 px-3 bg-amber-200 ">
+    <div className="w-full   py-10 md:px-4 px-3 bg-primary">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold tracking-wide">Trending</h2>
         <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-all">
@@ -32,7 +32,7 @@ export default function Trending() {
         </button>
       </div>
       {productLoaded ? (
-        <div className="w-full h-full flex flex-nowrap overflow-x-scroll gap-4 p-2 scrollbar-hide items-center bg-blue-200">
+        <div className="w-full h-full flex flex-nowrap overflow-x-scroll gap-4 p-2 scrollbar-hide items-center">
           {productList.slice(0, 5).map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}

@@ -33,7 +33,7 @@ export default function ProductCategory({
   }, [productLoaded, category]);
 
   return (
-    <div className="w-full bg-red-200 py-10 md:px-4 px-3">
+    <div className="w-full bg-primary py-10 md:px-4 px-3">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold tracking-wide">{title}</h2>
         <a

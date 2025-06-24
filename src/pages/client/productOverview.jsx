@@ -72,7 +72,7 @@ export default function ProductOverview() {
             </div>
 
             {/* Product details */}
-            <div className="sm:w-1/2 w-full p-10 bg-white rounded-2xl flex flex-col gap-6">
+            <div className="sm:w-1/2 w-full p-10 bg-white  flex flex-col gap-6">
               <div>
                 <h1 className="sm:text-5xl text-4xl font-bold text-gray-900 mb-3 tracking-tight">
                   {product.name}
