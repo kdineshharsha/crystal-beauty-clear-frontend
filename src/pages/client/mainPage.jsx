@@ -10,11 +10,11 @@ import SocialShowcase from "../../components/socialShowCase";
 import AdPopupModal from "../../components/popup";
 
 const categories = [
-  { id: 1, title: "LIPS", image: "/src/assets/lips.jpeg" },
-  { id: 2, title: "BROWS", image: "src/assets/brows.jpeg" },
-  { id: 3, title: "TAN", image: "src/assets/tan.webp" },
-  { id: 4, title: "NAILS", image: "src/assets/nails.webp" },
-  { id: 5, title: "FACE", image: "src/assets/face.jpg" },
+  { id: 1, title: "LIPS", image: "/assets/lips.jpeg" },
+  { id: 2, title: "BROWS", image: "/assets/brows.jpeg" },
+  { id: 3, title: "TAN", image: "/assets/tan.webp" },
+  { id: 4, title: "NAILS", image: "/assets/nails.webp" },
+  { id: 5, title: "FACE", image: "/assets/face.jpg" },
 ];
 
 export default function MainPage() {
