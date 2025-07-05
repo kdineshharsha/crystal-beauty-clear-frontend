@@ -123,7 +123,7 @@ export default function Header() {
 
             <span
               onClick={() => setDropdown(!Dropdown)}
-              className={`relative p-2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 lg:block hidden ${
+              className={`relative p-2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 md:block hidden ${
                 Dropdown
                   ? "text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
                   : "hover:text-pink-600 hover:bg-pink-50 hover:shadow-md"
