@@ -7,6 +7,7 @@ import FlashSale from "../../components/flashSale";
 import { Link } from "react-router-dom";
 import ProductCategory from "../../components/productCategory";
 import SocialShowcase from "../../components/socialShowCase";
+import AdPopupModal from "../../components/popup";
 
 const categories = [
   { id: 1, title: "LIPS", image: "/src/assets/lips.jpeg" },
@@ -44,9 +45,11 @@ export default function MainPage() {
   return (
     <div className="w-full  bg-primary relative ">
       <AdvertisementBanner />
+
       <Trending />
       <WhatsNew />
       <SocialShowcase />
+
       {/* <ProductCategory
         title="Lip Collection"
         buttonText="Shop Lips"

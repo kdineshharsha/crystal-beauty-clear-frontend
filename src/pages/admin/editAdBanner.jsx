@@ -200,7 +200,10 @@ export default function EditProductForm() {
                 "Save"
               )}
             </button>
-            <button className="w-1/2 bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-lg transition">
+            <button
+              className="w-1/2 bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-lg transition"
+              onClick={() => navigate("/admin/promo")}
+            >
               Cancel
             </button>
           </div>

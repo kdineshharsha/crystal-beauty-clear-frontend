@@ -104,91 +104,105 @@ export default function Users() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl shadow ring-1 ring-gray-200 bg-white">
+      <div className="overflow-x-auto ring-gray-200 ">
         {loaded ? (
           <>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
-                {filteredUsers.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                      {user.firstName} {user.lastName}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 capitalize">
-                      {user.role}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 inline-block text-xs rounded-full font-semibold ${
-                          user.isDisabled
-                            ? "bg-red-100 text-red-600"
-                            : "bg-green-100 text-green-600"
-                        }`}
-                      >
-                        {user.isDisabled ? "Disabled" : "Active"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 flex flex-wrap gap-2">
-                      <button
-                        onClick={() => toggleDisable(user._id, user.isDisabled)}
-                        className={`px-3 py-1 rounded text-sm font-medium shadow transition-colors ${
-                          user.isDisabled
-                            ? "bg-green-500 text-white hover:bg-green-600"
-                            : "bg-red-500 text-white hover:bg-red-600"
-                        }`}
-                      >
-                        {user.isDisabled ? "Enable" : "Disable"}
-                      </button>
-                      <button
-                        onClick={() => navigate(`/admin/users/${user.email}`)}
-                        className="px-3 py-1 rounded text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 shadow"
-                      >
-                        View
-                      </button>
-                    </td>
+            <div className="overflow-x-auto rounded-xl shadow ring-1 ring-gray-200 bg-white border border-gray-200">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {filteredUsers.map((user) => (
+                    <tr key={user._id} className="hover:bg-gray-50 transition">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                        {user.firstName} {user.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {user.email}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600 capitalize">
+                        {user.role}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 inline-block text-xs rounded-full font-semibold ${
+                            user.isDisabled
+                              ? "bg-red-100 text-red-600"
+                              : "bg-green-100 text-green-600"
+                          }`}
+                        >
+                          {user.isDisabled ? "Disabled" : "Active"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 flex flex-wrap gap-2">
+                        <button
+                          onClick={() =>
+                            toggleDisable(user._id, user.isDisabled)
+                          }
+                          className={`px-3 py-1 rounded text-sm font-medium shadow transition-colors ${
+                            user.isDisabled
+                              ? "bg-green-500 text-white hover:bg-green-600"
+                              : "bg-red-500 text-white hover:bg-red-600"
+                          }`}
+                        >
+                          {user.isDisabled ? "Enable" : "Disable"}
+                        </button>
+                        <button
+                          onClick={() => navigate(`/admin/users/${user.email}`)}
+                          className="px-3 py-1 rounded text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 shadow"
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-            {/* Pagination */}
-            <div className="flex justify-between items-center px-6 py-4 bg-gray-50">
+            {/* Updated Pagination Controls - matching products page style */}
+            <div className="mt-4 flex justify-center gap-2">
               <button
-                onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 disabled={page === 1}
-                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                onClick={() => setPage((p) => p - 1)}
+                className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
               >
-                Previous
+                Prev
               </button>
-              <span className="text-sm text-gray-600">
-                Page {page} of {totalPages}
-              </span>
+              {[...Array(totalPages).keys()].map((pageNum) => (
+                <button
+                  key={pageNum}
+                  onClick={() => setPage(pageNum + 1)}
+                  className={`px-3 py-1 rounded ${
+                    page === pageNum + 1
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  {pageNum + 1}
+                </button>
+              ))}
               <button
-                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 disabled={page === totalPages}
-                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                onClick={() => setPage((p) => p + 1)}
+                className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
               >
                 Next
               </button>

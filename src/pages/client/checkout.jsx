@@ -1,7 +1,13 @@
 import { useState } from "react";
-
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
-import { FiTrash2 } from "react-icons/fi";
+import {
+  FiTrash2,
+  FiPackage,
+  FiCreditCard,
+  FiUser,
+  FiMapPin,
+  FiPhone,
+} from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -14,9 +20,13 @@ export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  // const cart = getCart();
 
   function placeOrder() {
+    if (!name || !address || !phone) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     const orderData = {
       name: name,
       address: address,
@@ -51,8 +61,7 @@ export default function CheckoutPage() {
   function getTotal() {
     let total = 0;
     cart.forEach((item) => {
-      total = item.price * item.quantity;
-      0;
+      total += item.price * item.quantity;
     });
     return total;
   }
@@ -66,138 +75,302 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="w-full h-full bg-[#FFF5EA] py-10 px-4 flex justify-center">
-      <div className="w-full max-w-4xl space-y-6">
-        {cart.map((item, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-xl shadow-lg p-4 flex items-center justify-between hover:scale-101 transition-all"
-          >
-            {/* Product Image */}
-            <img
-              src={item.image}
-              alt={item.name}
-              className="size-24 rounded-lg object-cover border border-gray-200"
-            />
+    <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Checkout</h1>
+          <p className="text-gray-600">
+            Review your order and complete your purchase
+          </p>
+        </div>
 
-            {/* Product Info */}
-            <div className="flex flex-col flex-grow px-4">
-              <span className="text-lg font-semibold text-gray-800">
-                {item.name}
-              </span>
-              <span className="text-sm  text-gray-500 w-1/2 line-clamp-2">
-                {item.description}
-              </span>
-              <span className="text-gray-700 pt-1 text-sm font-semibold">
-                ${item.price.toFixed(2)}
-              </span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <FiPackage className="text-gray-700" size={20} />
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Order Items
+                </h2>
+                <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">
+                  {cart.length} items
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {cart.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                  >
+                    {/* Mobile Layout */}
+                    <div className="flex flex-col sm:hidden gap-3">
+                      <div className="flex items-start gap-3">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900">
+                            {item.name}
+                          </h3>
+
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="text-lg font-bold text-gray-900">
+                              Rs.{item.price.toFixed(2)}
+                            </span>
+                            {item.labeledPrice > item.price && (
+                              <span className="text-sm text-gray-500 line-through">
+                                Rs.{item.labeledPrice.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          className="w-8 h-8 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                          onClick={() => {
+                            const newCart = cart.filter(
+                              (product) => product.productId !== item.productId
+                            );
+                            setCart(newCart);
+                          }}
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1">
+                          <button
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                            onClick={() => {
+                              const newCart = [...cart];
+                              newCart[index].quantity -= 1;
+                              if (newCart[index].quantity <= 0)
+                                newCart[index].quantity = 1;
+                              setCart(newCart);
+                              setCartRefresh(!cartRefresh);
+                            }}
+                          >
+                            <AiOutlineMinus size={16} />
+                          </button>
+                          <span className="text-sm font-medium text-gray-900 px-2 min-w-[2rem] text-center">
+                            {item.quantity}
+                          </span>
+                          <button
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                            onClick={() => {
+                              const newCart = [...cart];
+                              newCart[index].quantity += 1;
+                              setCart(newCart);
+                              setCartRefresh(!cartRefresh);
+                            }}
+                          >
+                            <AiOutlinePlus size={16} />
+                          </button>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-accent">
+                            Rs.{(item.price * item.quantity).toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Desktop Layout */}
+                    <div className="hidden sm:flex items-center gap-4">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-20 h-20 rounded-lg object-cover border border-gray-200"
+                      />
+
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 truncate">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                          {item.description}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-lg font-bold text-gray-900">
+                            Rs.{item.price.toFixed(2)}
+                          </span>
+                          {item.labeledPrice > item.price && (
+                            <span className="text-sm text-gray-500 line-through">
+                              Rs.{item.labeledPrice.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1">
+                          <button
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                            onClick={() => {
+                              const newCart = [...cart];
+                              newCart[index].quantity -= 1;
+                              if (newCart[index].quantity <= 0)
+                                newCart[index].quantity = 1;
+                              setCart(newCart);
+                              setCartRefresh(!cartRefresh);
+                            }}
+                          >
+                            <AiOutlineMinus size={16} />
+                          </button>
+                          <span className="text-sm font-medium text-gray-900 px-2 min-w-[2rem] text-center">
+                            {item.quantity}
+                          </span>
+                          <button
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                            onClick={() => {
+                              const newCart = [...cart];
+                              newCart[index].quantity += 1;
+                              setCart(newCart);
+                              setCartRefresh(!cartRefresh);
+                            }}
+                          >
+                            <AiOutlinePlus size={16} />
+                          </button>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-accent">
+                            Rs.{(item.price * item.quantity).toFixed(2)}
+                          </div>
+                        </div>
+
+                        <button
+                          className="w-10 h-10 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                          onClick={() => {
+                            const newCart = cart.filter(
+                              (product) => product.productId !== item.productId
+                            );
+                            setCart(newCart);
+                          }}
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Quantity Controller */}
-            <div className="flex items-center gap-2">
-              <button
-                className="w-7 h-7 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition"
-                onClick={() => {
-                  const newCart = cart;
-                  newCart[index].quantity -= 1;
-                  if (newCart[index].quantity <= 0) newCart[index].quantity = 1;
-                  setCart(newCart);
-                  setCartRefresh(!cartRefresh);
-                }}
-              >
-                <AiOutlineMinus size={18} />
-              </button>
-              <span className="text-lg font-medium text-gray-800 px-2">
-                {item.quantity}
-              </span>
-              <button
-                className="w-7 h-7 flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-black transition"
-                onClick={() => {
-                  const newCart = cart;
-                  newCart[index].quantity += 1;
-                  setCart(newCart);
-                  setCartRefresh(!cartRefresh);
-                }}
-              >
-                <AiOutlinePlus size={18} />
-              </button>
+            {/* Customer Information */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <FiUser className="text-gray-700" size={20} />
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Delivery Information
+                </h2>
+              </div>
 
-              <span className="text-lg ml-5">
-                ${(item.price * item.quantity).toFixed(2)}
-              </span>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <FiUser className="inline mr-2" size={16} />
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
 
-              <button
-                className="bg-red-500 p-2 rounded-lg text-white text-2xl ml-5"
-                onClick={() => {
-                  const newCart = cart.filter(
-                    (product) => product.productId !== item.productId
-                  );
-                  setCart(newCart);
-                }}
-              >
-                <FiTrash2 />
-              </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <FiPhone className="inline mr-2" size={16} />
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                    placeholder="Enter your phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <FiMapPin className="inline mr-2" size={16} />
+                    Delivery Address *
+                  </label>
+                  <textarea
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-colors resize-none"
+                    rows="3"
+                    placeholder="Enter your full delivery address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        ))}
-        <div className="w-full flex justify-end">
-          <div className="bg-white rounded-xl shadow-md p-5 w-full sm:w-80 space-y-3">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              Cart Summary
-            </h2>
 
-            <div className="flex justify-between text-gray-700">
-              <span>Total</span>
-              <span>${getTotalForLabeledPrice().toFixed(2)}</span>
-            </div>
+          {/* Order Summary */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-6">
+              <div className="flex items-center gap-2 mb-6">
+                <FiCreditCard className="text-gray-700" size={20} />
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Order Summary
+                </h2>
+              </div>
 
-            <div className="flex justify-between text-gray-700">
-              <span>Discount</span>
-              <span className="text-green-600">
-                - ${getTotalForLabeledPrice() - getTotal().toFixed(2)}
-              </span>
-            </div>
+              <div className="space-y-4">
+                <div className="flex justify-between text-gray-700">
+                  <span>Subtotal</span>
+                  <span>${getTotalForLabeledPrice().toFixed(2)}</span>
+                </div>
 
-            <hr className="border-t border-gray-300" />
+                <div className="flex justify-between text-green-600">
+                  <span>Discount</span>
+                  <span>
+                    -${(getTotalForLabeledPrice() - getTotal()).toFixed(2)}
+                  </span>
+                </div>
 
-            <div className="flex justify-between text-xl font-bold text-gray-800">
-              <span>Net Total</span>
-              <span className="text-amber-600">${getTotal().toFixed(2)}</span>
+                <div className="flex justify-between text-gray-700">
+                  <span>Shipping</span>
+                  <span className="text-green-600">Free</span>
+                </div>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex justify-between text-xl font-bold text-gray-900">
+                    <span>Total</span>
+                    <span>${getTotal().toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                className="w-full mt-6 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                onClick={placeOrder}
+              >
+                Place Order
+              </button>
+
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-500">
+                  By placing this order, you agree to our{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Terms of Service
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full flex justify-end">
-          <button
-            className="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-6 rounded-xl transition"
-            onClick={placeOrder}
-          >
-            Place Order
-          </button>
-        </div>
-        <div className="w-full  flex justify-end">
-          <h1 className="w-[100px] text-xl  text-end pr-2">Name</h1>
-          <input
-            className="w-[200px] text-xl border-b-[2px] text-end pr-2"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div className="w-full  flex justify-end">
-          <h1 className="w-[100px] text-xl  text-end pr-2">Phone</h1>
-          <input
-            className="w-[200px] text-xl border-b-[2px] text-end pr-2"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </div>
-        <div className="w-full  flex justify-end">
-          <h1 className="w-[100px] text-xl  text-end pr-2">Address</h1>
-          <input
-            className="w-[200px] text-xl border-b-[2px] text-end pr-2"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
         </div>
       </div>
     </div>

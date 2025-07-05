@@ -1,8 +1,10 @@
 import React from "react";
+import AdPopupModal from "../../components/popup";
 
 export default function About() {
   return (
     <div className="w-full bg-pink-50 min-h-screen text-gray-800">
+      <AdPopupModal />
       {/* Hero Section */}
       <div className="w-full bg-gradient-to-r from-pink-100 via-white to-pink-200 py-16 px-6 text-center">
         <h1 className="text-4xl sm:text-5xl font-bold text-pink-600">

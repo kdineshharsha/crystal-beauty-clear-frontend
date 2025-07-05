@@ -48,45 +48,55 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center items-center top-0 sticky z-10 bg-white">
-      <header className="w-full bg-white shadow-lg md:h-16 h-12 backdrop-blur-md border border-gray-200 relative">
+    <div className="w-full flex justify-center items-center top-0 sticky z-10 bg-gradient-to-r from-slate-50 to-blue-50">
+      <header className="w-full bg-white/80 backdrop-blur-xl shadow-xl border-b border-gray-200/50 md:h-16 h-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:h-16 h-12 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center h-full">
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="h-30 object-cover absolute"
-            />
+            <Link to="/" className="flex items-center">
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="h-30 w-auto object-contain hover:scale-105 transition-transform duration-300"
+              />
+            </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="hidden md:flex space-x-6 font-medium text-gray-600">
+          <nav className="hidden md:flex space-x-8 font-medium text-gray-700">
             {navItems.map((item, index) => (
               <NavLink
                 key={index}
                 to={item.to}
                 end
                 className={({ isActive }) =>
-                  `transition duration-300 ${
+                  `relative px-3 py-2 rounded-lg transition-all duration-200 transform hover:scale-102 ${
                     isActive
-                      ? "text-pink-500 font-semibold border-b-2 border-pink-500"
-                      : "hover:text-pink-400"
+                      ? "text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
+                      : "hover:text-pink-600 hover:bg-pink-50 hover:shadow-md"
                   }`
                 }
               >
                 {item.label}
+                {/* Active indicator dot */}
+                <span
+                  className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full transition-all duration-200 ${({
+                    isActive,
+                  }) => (isActive ? "bg-white" : "bg-transparent")}`}
+                />
               </NavLink>
             ))}
           </nav>
 
           {/* Cart & Icons */}
-          <div className="text-2xl text-gray-700 flex lg:flex items-center space-x-4">
+          <div className="text-2xl text-gray-700 flex lg:flex items-center space-x-2">
             <NavLink
               to="/cart"
               className={({ isActive }) =>
-                `transition duration-300 ${
-                  isActive ? "text-pink-500" : "hover:text-pink-400"
+                `relative p-2 rounded-full transition-all duration-300 hover:scale-110 ${
+                  isActive
+                    ? "text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
+                    : "hover:text-pink-600 hover:bg-pink-50 hover:shadow-md"
                 }`
               }
             >
@@ -95,63 +105,67 @@ export default function Header() {
 
             <span
               onClick={() => setNotificationOpen(!notificationOpen)}
-              className={`relative cursor-pointer transition duration-300 ${
-                notificationOpen ? "text-pink-500" : "hover:text-pink-400"
+              className={`relative p-2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 ${
+                notificationOpen
+                  ? "text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
+                  : "hover:text-pink-600 hover:bg-pink-50 hover:shadow-md"
               }`}
             >
               <MdOutlineNotificationsNone />
 
-              {/* 🔴 Red Dot Indicator */}
+              {/* Notification indicator */}
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-ping"></span>
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full border-2 border-white">
+                  <span className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-ping"></span>
+                </span>
               )}
             </span>
 
-            <NavLink
+            <span
               onClick={() => setDropdown(!Dropdown)}
-              className={() =>
-                `transition duration-300 lg:block hidden ${
-                  Dropdown ? "text-pink-500" : "hover:text-pink-400"
-                }`
-              }
+              className={`relative p-2 rounded-full cursor-pointer transition-all duration-300 hover:scale-110 lg:block hidden ${
+                Dropdown
+                  ? "text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
+                  : "hover:text-pink-600 hover:bg-pink-50 hover:shadow-md"
+              }`}
             >
               <FiUser />
-            </NavLink>
+            </span>
           </div>
         </div>
 
         {/* User Dropdown */}
         <div
           ref={dropdownRef}
-          className={`w-60 h-auto bg-white rounded-2xl absolute top-16 right-0 flex flex-col items-center p-4 shadow-lg transform transition-all duration-300 ease-out origin-top-right ${
+          className={`w-64 h-auto bg-white/95 backdrop-blur-xl rounded-2xl absolute top-16 right-4 flex flex-col items-center p-4 shadow-2xl border border-gray-200/50 transform transition-all duration-300 ease-out origin-top-right ${
             Dropdown
-              ? "scale-100 opacity-100"
-              : "scale-95 opacity-0 pointer-events-none"
+              ? "scale-100 opacity-100 translate-y-0"
+              : "scale-95 opacity-0 pointer-events-none -translate-y-2"
           }`}
         >
           <UserData />
-          <hr className="bg-accent w-full mt-4" />
-          <div className="w-full mt-2 space-y-2">
+          <hr className="bg-gradient-to-r from-pink-300 to-purple-300 w-full mt-4 h-0.5 border-0" />
+          <div className="w-full mt-4 space-y-2">
             <Link
               to="/orders"
-              className="hover:text-pink-500 text-secondary transition duration-300 flex items-center space-x-2"
+              className="hover:text-pink-600 text-gray-700 transition-all duration-300 flex items-center space-x-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:shadow-md transform hover:scale-105"
             >
-              <RiShoppingBag4Line />
-              <span>My Orders</span>
+              <RiShoppingBag4Line className="text-purple-500" />
+              <span className="font-medium">My Orders</span>
             </Link>
             <Link
               to="/wishlist"
-              className="hover:text-pink-500 text-secondary transition duration-300 flex items-center space-x-2"
+              className="hover:text-pink-600 text-gray-700 transition-all duration-300 flex items-center space-x-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:shadow-md transform hover:scale-105"
             >
-              <PiHeartBold />
-              <span>Wishlist</span>
+              <PiHeartBold className="text-red-500" />
+              <span className="font-medium">Wishlist</span>
             </Link>
             <Link
               to="/"
-              className="hover:text-pink-500 text-secondary transition duration-300 flex items-center space-x-2"
+              className="hover:text-pink-600 text-gray-700 transition-all duration-300 flex items-center space-x-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:shadow-md transform hover:scale-105"
             >
-              <FiMessageSquare />
-              <span>Message Center</span>
+              <FiMessageSquare className="text-blue-500" />
+              <span className="font-medium">Message Center</span>
             </Link>
           </div>
         </div>
@@ -159,10 +173,10 @@ export default function Header() {
         {/* Notification Dropdown */}
         <div
           ref={notificationRef}
-          className={`max-w-78 max-h-100 bg-white rounded-2xl absolute top-16 right-4 flex flex-col shadow-lg transform transition-all duration-300 ease-out origin-top-right z-50  ${
+          className={`max-w-80 max-h-96 bg-white/95 backdrop-blur-xl rounded-2xl absolute top-16 right-4 flex flex-col shadow-2xl border border-gray-200/50 transform transition-all duration-300 ease-out origin-top-right z-50 ${
             notificationOpen
-              ? "scale-100 opacity-100"
-              : "scale-95 opacity-0 pointer-events-none"
+              ? "scale-100 opacity-100 translate-y-0"
+              : "scale-95 opacity-0 pointer-events-none -translate-y-2"
           }`}
         >
           <Notification onNotificationCount={setNotificationCount} />

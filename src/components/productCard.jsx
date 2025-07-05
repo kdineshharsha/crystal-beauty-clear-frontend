@@ -11,10 +11,11 @@ export default function ProductCard({
   const total = product.totalReviews || 0;
 
   return (
-    <div className="relative w-full min-w-41 sm:w-68 max-w-275 bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-102">
+    <div className="group relative w-full min-w-42 sm:min-w-48 max-w-80 h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 flex flex-col">
+      {/* Wishlist Button */}
       {wishlistMode && (
         <button
-          className="absolute top-2 right-2 text-pink-500 text-xl bg-white rounded-full p-1 hover:scale-110 transition z-1"
+          className="absolute top-2 right-2 z-10 text-red-500 text-lg sm:text-xl bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2 hover:scale-110 hover:bg-white transition-all duration-300 shadow-lg"
           onClick={() => removeFromWishlist(product.wishlistId)}
           title="Remove from wishlist"
         >
@@ -22,40 +23,83 @@ export default function ProductCard({
         </button>
       )}
 
-      <Link to={`/overview/${product.productId}`}>
-        <div className="w-full aspect-square overflow-hidden">
+      {/* Discount Badge */}
+      {product.labeledPrice > product.price && (
+        <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-full shadow-lg">
+          {Math.round(
+            ((product.labeledPrice - product.price) / product.labeledPrice) *
+              100
+          )}
+          % OFF
+        </div>
+      )}
+
+      <Link to={`/overview/${product.productId}`} className="block">
+        {/* Image Container */}
+        <div className="relative w-full aspect-square overflow-hidden bg-gray-50">
           <img
             src={product.image[0]}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
 
-        <div className="px-2 pt-2 flex-col justify-between h-[calc(100%-10rem)]">
-          <h2 className="text-lg font-semibold text-secondary line-clamp-1">
+        {/* Content */}
+        <div className="p-3 sm:p-4 flex flex-col flex-1">
+          {/* Product Name - Fixed height */}
+          <h2 className="text-sm sm:text-lg font-bold text-gray-800 line-clamp-1 leading-tight group-hover:text-blue-600 transition-colors duration-300 ">
             {product.name}
           </h2>
 
-          <div className="flex items-center gap-1 text-sm text-orange-500 mt-1">
-            {"★".repeat(Math.round(average)) +
-              "☆".repeat(5 - Math.round(average))}
-            <span className="text-xs text-gray-500 ml-1">({total})</span>
+          {/* Rating - Fixed height */}
+          <div className="flex items-center gap-1 sm:gap-2 h-5">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`text-xs sm:text-sm ${
+                    i < Math.round(average)
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <span className="text-xs sm:text-sm text-gray-500 font-medium">
+              {average.toFixed(1)} ({total})
+            </span>
           </div>
 
-          <p className="mt-2 text-sm text-gray-500 line-clamp-2">
+          {/* Description - Fixed height */}
+          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2  my-1 h-8 sm:h-10">
             {product.description}
           </p>
 
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-lg font-bold text-accent">
-              Rs.{product.price.toFixed(2)}
-            </p>
-            {product.labeledPrice > product.price && (
-              <p className="text-sm text-gray-400 line-through">
-                Rs.{product.labeledPrice.toFixed(2)}
-              </p>
-            )}
+          {/* Spacer to push price and button to bottom */}
+          <div className="flex-1"></div>
+
+          {/* Price Section - Fixed height */}
+          <div className="flex items-center  justify-between  my-1">
+            <div className="flex items-center  justify-between w-full">
+              <span className="text-md sm:text-xl font-bold text-gray-900">
+                Rs. {product.price.toFixed(2)}
+              </span>
+              {product.labeledPrice > product.price && (
+                <span className="text-xs sm:text-sm text-gray-400 line-through">
+                  Rs. {product.labeledPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
           </div>
+
+          {/* Add to Cart Button - Fixed position */}
+          <button className="w-full mt-2  bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base">
+            Add to Cart
+          </button>
         </div>
       </Link>
     </div>

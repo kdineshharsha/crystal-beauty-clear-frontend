@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  Routes,
+  Route,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import {
   FaHome,
   FaUsers,
@@ -22,6 +28,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import AdminDashboard from "./admin/dashboard";
 import Sales from "./admin/sales";
+import AddPopupAd from "./admin/addPopupAdForm";
+import EditPopupAd from "./admin/editPopupAd";
 
 export default function AdminPage() {
   const [userValidated, setUserValidated] = useState(false);
@@ -55,6 +63,7 @@ export default function AdminPage() {
           }
         })
         .catch((err) => {
+          console.log("Error validating user", err);
           toast.error("Error validating user");
           navigate("/login");
         });
@@ -99,6 +108,10 @@ export default function AdminPage() {
           Admin Dashboard
         </div>
         <Routes>
+          <Route
+            path="/"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<Users />} />
           <Route path="products" element={<AdminProductsPage />} />
@@ -110,6 +123,8 @@ export default function AdminPage() {
           <Route path="/promo/addBanner" element={<AdBannerForm />} />
           <Route path="/promo/editBanner" element={<EditAdBanner />} />
           <Route path="users/:userEmail" element={<UserProfile />} />
+          <Route path="promo/addpopup" element={<AddPopupAd />} />
+          <Route path="promo/editpopup" element={<EditPopupAd />} />
         </Routes>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Loader from "../../components/loader";
+import PopupAdList from "../../components/popupAdvertisement";
 
 export default function Promotions() {
   const [adList, setAdList] = useState([]);
@@ -53,7 +54,7 @@ export default function Promotions() {
   };
 
   return (
-    <div className="w-full min-h-screen p-6">
+    <div className="w-full min-h-screen p-6 space-y-8">
       <div className="max-w-6xl mx-auto w-full">
         {/* Title and Add Button */}
         <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
@@ -76,7 +77,7 @@ export default function Promotions() {
             </div>
           ) : (
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 ">
                 <tr>
                   {[
                     "Ad Title",
@@ -157,7 +158,8 @@ export default function Promotions() {
             </table>
           )}
         </div>
-      </div>
+      </div>{" "}
+      <PopupAdList />
     </div>
   );
 }
