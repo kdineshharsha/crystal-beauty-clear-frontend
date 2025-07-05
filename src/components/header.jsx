@@ -48,9 +48,9 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center items-center top-0 sticky z-10 bg-gradient-to-r from-slate-50 to-blue-50">
-      <header className="w-full bg-white/80 backdrop-blur-xl shadow-xl border-b border-gray-200/50 md:h-16 h-12 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:h-16 h-12 flex items-center justify-between">
+    <div className="w-full flex justify-center items-center top-0 sticky z-100 bg-gradient-to-r from-slate-50 to-blue-50">
+      <header className="w-full bg-white/80 backdrop-blur-xl shadow-xl border-b border-gray-200/50 md:h-16 h-14 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:h-16 h-14 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center h-full">
             <Link to="/" className="flex items-center">
@@ -115,7 +115,7 @@ export default function Header() {
 
               {/* Notification indicator */}
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full border-2 border-white">
+                <span className="absolute -top-0.25 -right-0.25 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full border-2 border-white">
                   <span className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-ping"></span>
                 </span>
               )}

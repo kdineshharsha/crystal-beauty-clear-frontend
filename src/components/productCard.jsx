@@ -40,7 +40,7 @@ export default function ProductCard({
           <img
             src={product.image[0]}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
           />
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -49,7 +49,7 @@ export default function ProductCard({
         {/* Content */}
         <div className="p-3 sm:p-4 flex flex-col flex-1">
           {/* Product Name - Fixed height */}
-          <h2 className="text-sm sm:text-lg font-bold text-gray-800 line-clamp-1 leading-tight group-hover:text-blue-600 transition-colors duration-300 ">
+          <h2 className="text-sm sm:text-lg font-bold text-gray-800 line-clamp-1 leading-tight group-hover:text-accent-hover transition-colors duration-300 ">
             {product.name}
           </h2>
 
@@ -97,7 +97,21 @@ export default function ProductCard({
           </div>
 
           {/* Add to Cart Button - Fixed position */}
-          <button className="w-full mt-2  bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base">
+          <button
+            className="w-full mt-2 sm:mt-4 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-xl transition-all duration-300 transform hover:scale-103 shadow-lg hover:shadow-xl text-sm sm:text-base"
+            style={{
+              background: "linear-gradient(to right, #f6339a, #e60076)",
+              "--hover-bg": "linear-gradient(to right, #e60076, #d1006b)",
+            }}
+            onMouseEnter={(e) =>
+              (e.target.style.background =
+                "linear-gradient(to right, #e60076, #d1006b)")
+            }
+            onMouseLeave={(e) =>
+              (e.target.style.background =
+                "linear-gradient(to right, #f6339a, #e60076)")
+            }
+          >
             Add to Cart
           </button>
         </div>
