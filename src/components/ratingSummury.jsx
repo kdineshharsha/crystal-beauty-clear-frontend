@@ -15,38 +15,51 @@ export default function RatingSummary({ reviews = [] }) {
   );
 
   return (
-    <div className="w-full lg:max-w-sm bg-white p-6 rounded-xl shadow-md">
-      <div className="text-4xl font-bold text-orange-500">{average}</div>
-      <div className="text-orange-500 mb-2 text-xl">
-        {"★".repeat(Math.round(average)) + "☆".repeat(5 - Math.round(average))}
+    <div className="w-full lg:max-w-sm bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+      <div className="text-center mb-8">
+        <div className="text-6xl font-bold text-transparent bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text mb-2">
+          {average}
+        </div>
+        <div className="text-orange-500 mb-3 text-3xl tracking-wide">
+          {"★".repeat(Math.round(average)) +
+            "☆".repeat(5 - Math.round(average))}
+        </div>
+        <p className="text-sm text-gray-600 font-medium">
+          Based on{" "}
+          <span className="font-semibold text-gray-800">
+            {total.toLocaleString()}
+          </span>{" "}
+          reviews
+        </p>
       </div>
-      <p className="text-sm text-gray-600 mb-4">
-        Based on {total.toLocaleString()} reviews
-      </p>
 
       {/* Star bars */}
-      {counts.map((count, index) => {
-        const star = 5 - index;
-        const percent = total ? (count / total) * 100 : 0;
+      <div className="space-y-3 mb-8">
+        {counts.map((count, index) => {
+          const star = 5 - index;
+          const percent = total ? (count / total) * 100 : 0;
 
-        return (
-          <div key={star} className="flex items-center mb-1 gap-2">
-            <span className="text-sm w-4">{star}</span>
-            <span className="text-orange-500">★</span>
-            <div className="flex-1 h-2 bg-gray-200 rounded">
-              <div
-                className="h-2 bg-orange-500 rounded"
-                style={{ width: `${percent}%` }}
-              ></div>
+          return (
+            <div key={star} className="flex items-center gap-3">
+              <span className="text-sm font-medium w-4 text-gray-700">
+                {star}
+              </span>
+              <span className="text-orange-500 text-lg">★</span>
+              <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${percent}%` }}
+                ></div>
+              </div>
+              <span className="text-xs text-gray-500 w-12 text-right font-medium">
+                {count}
+              </span>
             </div>
-            <span className="text-xs text-gray-500 w-10 text-right">
-              {count}
-            </span>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
 
-      <button className="mt-4 bg-orange-500 text-white py-1.5 px-4 rounded hover:bg-orange-600 text-sm">
+      <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 text-sm font-semibold shadow-lg transition-all duration-200 transform hover:scale-105">
         Top reviews
       </button>
     </div>

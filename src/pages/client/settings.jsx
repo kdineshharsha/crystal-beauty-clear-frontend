@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-
+import { toast } from "react-hot-toast";
 export default function Settings() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -17,11 +17,12 @@ export default function Settings() {
           },
         }
       );
+      toast.success("Account deleted successfully.");
       localStorage.removeItem("token");
       navigate("/login");
     } catch (err) {
       console.error("Error deleting account:", err);
-      alert("Something went wrong while deleting your account.");
+      toast.error("Failed to delete account. Please try again.");
     }
   };
 

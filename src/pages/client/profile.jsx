@@ -40,9 +40,14 @@ export default function Profile() {
           axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/wishlist`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/order`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/order/${
+              userRes.data.user.email
+            }`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          ),
         ]);
 
         setWishlistCount(wishlistRes.data.length);
