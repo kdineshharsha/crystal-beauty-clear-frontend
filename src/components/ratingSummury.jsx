@@ -15,7 +15,7 @@ export default function RatingSummary({ reviews = [] }) {
   );
 
   return (
-    <div className="w-full lg:max-w-sm bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+    <div className="w-full lg:max-w-sm bg-white sm:p-8 p-6 rounded-2xl shadow-xl border border-gray-100">
       <div className="text-center mb-8">
         <div className="text-6xl font-bold text-transparent bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text mb-2">
           {average}
@@ -34,7 +34,7 @@ export default function RatingSummary({ reviews = [] }) {
       </div>
 
       {/* Star bars */}
-      <div className="space-y-3 mb-8">
+      <div className="space-y-3 mb-4">
         {counts.map((count, index) => {
           const star = 5 - index;
           const percent = total ? (count / total) * 100 : 0;
@@ -58,10 +58,6 @@ export default function RatingSummary({ reviews = [] }) {
           );
         })}
       </div>
-
-      <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 text-sm font-semibold shadow-lg transition-all duration-200 transform hover:scale-105">
-        Top reviews
-      </button>
     </div>
   );
 }

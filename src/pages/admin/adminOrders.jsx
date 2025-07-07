@@ -1,8 +1,21 @@
 import axios from "axios";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import Loader from "../../components/loader";
 import { IoMdClose } from "react-icons/io";
 import toast from "react-hot-toast";
+import {
+  FaShoppingCart,
+  FaSearch,
+  FaDownload,
+  FaEye,
+  FaChevronLeft,
+  FaChevronRight,
+  FaClipboardList,
+  FaClock,
+  FaCheckCircle,
+  FaTruck,
+  FaTimesCircle,
+} from "react-icons/fa";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -14,6 +27,7 @@ export default function AdminOrders() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const downloadRef = useRef(null);
 
   useEffect(() => {
     if (!loaded) {
@@ -93,279 +107,457 @@ export default function AdminOrders() {
         .map((row) => row.map((v) => `"${v}"`).join(","))
         .join("\n");
     const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "orders.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadRef.current.href = encodedUri;
+    downloadRef.current.download = "orders.csv";
+    downloadRef.current.click();
   }
 
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Pending":
+        return <FaClock className="text-yellow-600" />;
+      case "Processing":
+        return <FaClipboardList className="text-blue-600" />;
+      case "Shipped":
+        return <FaTruck className="text-purple-600" />;
+      case "Delivered":
+        return <FaCheckCircle className="text-green-600" />;
+      case "Cancelled":
+        return <FaTimesCircle className="text-red-600" />;
+      default:
+        return <FaClock className="text-gray-600" />;
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "Processing":
+        return "bg-blue-100 text-blue-800";
+      case "Shipped":
+        return "bg-purple-100 text-purple-800";
+      case "Delivered":
+        return "bg-green-100 text-green-800";
+      case "Cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
-    <div className="w-full h-full p-6">
-      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-        {/* Left: Title */}
-        <h2 className="text-3xl font-bold text-gray-800 flex-shrink-0">
-          Order Management
-        </h2>
-        <div className="flex flex-col sm:flex-row gap-3">
-          {" "}
-          {/* Middle: Search Input */}
-          <input
-            type="text"
-            placeholder="Search by Name, Order ID, or Email"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="flex-grow max-w-md border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Right: Export Button */}
-          <button
-            onClick={exportToCSV}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-sm text-sm flex-shrink-0"
-            title="Export filtered orders to CSV"
-          >
-            Export CSV
-          </button>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white p-6 rounded-t-3xl">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+              <FaShoppingCart className="text-white text-xl" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Order Management</h1>
+              <p className="text-orange-100 text-sm">
+                Track and manage customer orders
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {loaded ? (
-        <>
-          <div className="overflow-x-auto rounded-xl shadow ring-1 ring-gray-200 bg-white">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  {[
-                    "Order ID",
-                    "Customer",
-                    "Email",
-                    "Phone",
-                    "Address",
-                    "Status",
-                    "Total",
-                    "Date",
-                    "Action",
-                  ].map((header) => (
-                    <th
-                      key={header}
-                      className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-100 text-sm text-gray-800">
-                {paginatedOrders.map((order, idx) => (
-                  <tr
-                    key={idx}
-                    className="hover:bg-gray-50 transition duration-150 cursor-pointer"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap font-mono">
-                      {order.orderId}
-                    </td>
-                    <td className="px-6 py-4">{order.name}</td>
-                    <td className="px-6 py-4">{order.email}</td>
-                    <td className="px-6 py-4">{order.phoneNumber}</td>
-                    <td className="px-6 py-4 max-w-xs truncate">
-                      {order.address}
-                    </td>
-                    <td className="px-6 py-4">
-                      <select
-                        value={order.status}
-                        onChange={(e) =>
-                          changeOrderStatus(order.orderId, e.target.value)
-                        }
-                        className="border rounded px-2 py-1 text-sm"
-                      >
-                        {[
-                          "Pending",
-                          "Processing",
-                          "Cancelled",
-                          "Shipped",
-                          "Delivered",
-                        ].map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">${order.total.toFixed(2)}</td>
-                    <td className="px-6 py-4">
-                      {new Date(order.date).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm shadow"
-                        onClick={() => {
-                          setModalIsDisplaying(true);
-                          setDisplayingOrder(order);
-                        }}
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {/* Controls */}
+        <div className="bg-white p-6 shadow-2xl">
+          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaSearch className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by Name, Order ID, or Email"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-200"
+              />
+            </div>
 
-          {/* Pagination */}
-          <div className="mt-4 flex justify-center gap-2 flex-wrap">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => p - 1)}
-              className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-            >
-              Prev
-            </button>
-            {[...Array(pageCount).keys()].map((page) => (
+            {/* Actions */}
+            <div className="flex gap-3">
               <button
-                key={page}
-                onClick={() => setCurrentPage(page + 1)}
-                className={`px-3 py-1 rounded ${
-                  currentPage === page + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
+                onClick={exportToCSV}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
               >
-                {page + 1}
+                <FaDownload className="text-sm" />
+                Export CSV
               </button>
-            ))}
-            <button
-              disabled={currentPage === pageCount || pageCount === 0}
-              onClick={() => setCurrentPage((p) => p + 1)}
-              className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
+              <a ref={downloadRef} style={{ display: "none" }} />
+            </div>
           </div>
+        </div>
 
-          {/* Modal */}
-          {modalIsDisplaying && (
-            <div className="fixed top-0 left-0 bg-[#00000080]  w-full h-full  flex justify-center items-center ">
-              <div className="w-100 max-h-150 bg-white rounded-xl p-4 relative">
-                <button
-                  className="absolute size-8 rounded-full shadow-lg   flex justify-center items-center -top-4 -right-4 bg-white "
-                  onClick={() => {
-                    setModalIsDisplaying(false);
-                  }}
-                >
-                  <IoMdClose />
-                </button>
-                <div className="w-full h-15 border-b-1 border-gray-200 flex justify-between border-gray-1 flex items-center ">
-                  <h1 className="text-sm font-semibold">
+        {/* Table Container */}
+        <div className="bg-white rounded-b-3xl shadow-2xl overflow-hidden">
+          {loaded ? (
+            <>
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-6 border-b border-gray-200">
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <FaShoppingCart className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Total Orders</p>
+                      <p className="text-2xl font-bold">
+                        {filteredOrders.length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-4 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <FaClock className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Pending</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Pending")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <FaTruck className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Shipped</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Shipped")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <FaCheckCircle className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Delivered</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Delivered")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <FaTimesCircle className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Cancelled</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Cancelled")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      {[
+                        "Order ID",
+                        "Customer",
+                        "Email",
+                        "Phone",
+                        "Address",
+                        "Status",
+                        "Total",
+                        "Date",
+                        "Action",
+                      ].map((header) => (
+                        <th
+                          key={header}
+                          className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
+                        >
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-100">
+                    {paginatedOrders.map((order, idx) => (
+                      <tr
+                        key={idx}
+                        className={`hover:bg-gray-50 transition-colors ${
+                          idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+                        }`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-mono font-semibold text-gray-900">
+                            {order.orderId}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-semibold text-gray-900">
+                            {order.name}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-600">
+                            {order.email}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-600">
+                            {order.phoneNumber}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 max-w-xs">
+                          <div className="text-sm text-gray-600 truncate">
+                            {order.address}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={order.status}
+                              onChange={(e) =>
+                                changeOrderStatus(order.orderId, e.target.value)
+                              }
+                              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border-0 focus:outline-none focus:ring-2 focus:ring-orange-500 ${getStatusColor(
+                                order.status
+                              )}`}
+                            >
+                              {[
+                                "Pending",
+                                "Processing",
+                                "Cancelled",
+                                "Shipped",
+                                "Delivered",
+                              ].map((status) => (
+                                <option key={status} value={status}>
+                                  {status}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-semibold text-gray-900">
+                            ${order.total.toFixed(2)}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-600">
+                            {new Date(order.date).toLocaleDateString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 transform hover:scale-105 shadow-sm"
+                            onClick={() => {
+                              setModalIsDisplaying(true);
+                              setDisplayingOrder(order);
+                            }}
+                          >
+                            <FaEye />
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="p-6 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-500">
+                    Showing {(currentPage - 1) * pageSize + 1} to{" "}
+                    {Math.min(currentPage * pageSize, filteredOrders.length)} of{" "}
+                    {filteredOrders.length} orders
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => p - 1)}
+                      className="flex items-center gap-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all duration-200 text-sm font-medium"
+                    >
+                      <FaChevronLeft />
+                      Previous
+                    </button>
+
+                    <div className="flex gap-1">
+                      {[...Array(pageCount).keys()].map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page + 1)}
+                          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                            currentPage === page + 1
+                              ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                              : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                          }`}
+                        >
+                          {page + 1}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      disabled={currentPage === pageCount || pageCount === 0}
+                      onClick={() => setCurrentPage((p) => p + 1)}
+                      className="flex items-center gap-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all duration-200 text-sm font-medium"
+                    >
+                      Next
+                      <FaChevronRight />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="p-12 flex justify-center">
+              <Loader />
+            </div>
+          )}
+        </div>
+
+        {/* Modal */}
+        {modalIsDisplaying && (
+          <div className="fixed top-0 left-0 bg-black/50 backdrop-blur-sm w-full h-full flex justify-center items-center z-50">
+            <div className="w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl relative overflow-hidden">
+              <button
+                className="absolute size-10 rounded-full shadow-lg flex justify-center items-center -top-4 -right-4 bg-white hover:bg-gray-100 transition-colors z-10"
+                onClick={() => setModalIsDisplaying(false)}
+              >
+                <IoMdClose className="text-gray-600" />
+              </button>
+
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-lg font-bold">
                     Order ID: {displayingOrder.orderId}
                   </h1>
-                  <span className="text-[12px] text-green-600 bg-gray-100 px-2 py-0.5 rounded-xl ">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                      displayingOrder.status
+                    )}`}
+                  >
                     {displayingOrder.status}
                   </span>
                 </div>
-                <div className="w-full   border-b-1 border-gray-200 overflow-y-auto max-h-60 ">
-                  {displayingOrder.billItems.map((item, index) => {
-                    return (
-                      // Order Raw Box
+              </div>
+
+              <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+                {/* Order Items */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-4">Order Items</h2>
+                  <div className="space-y-3">
+                    {displayingOrder.billItems.map((item, index) => (
                       <div
                         key={index}
-                        className="w-full h-[100px]   my-[5px] flex items-center justify-start  "
+                        className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
                       >
-                        {/* Order Raw Box Image Box */}
-                        <div className=" items-center p-2 max-w-24  ">
+                        <div className="w-16 h-16 flex-shrink-0">
                           <img
                             src={item.image}
-                            className=" aspect-square object-cover rounded-md "
+                            className="w-full h-full object-cover rounded-lg"
+                            alt={item.productName}
                           />
                         </div>
-                        {/* Order Raw Box Text Box */}
-                        <div className=" h-full w-full  px-2 pt-4">
-                          <div className="h-auto w-full flex items-center justify-between overflow-hidden ">
-                            <h1 className="text-[12px] font-semibold">
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start">
+                            <h3 className="font-semibold text-gray-900">
                               {item.productName}
-                            </h1>
-                            <h1 className="text-[12px] font-semibold">
-                              $ {item.price * item.quantity}
-                            </h1>
+                            </h3>
+                            <span className="font-semibold text-green-600">
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </span>
                           </div>
-                          <div className="h-auto w-full flex items-center justify-between overflow-hidden ">
-                            <h1 className="text-[12px] font-semibold text-gray-500">
+                          <div className="flex justify-between items-center mt-1">
+                            <span className="text-sm text-gray-500">
                               {item.productId}
-                            </h1>
-                            <h1 className="text-[12px] font-semibold text-gray-500">
+                            </span>
+                            <span className="text-sm text-gray-500">
                               Qty: {item.quantity}
-                            </h1>
+                            </span>
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-                <div className=" w-full h-auto p-2 ">
-                  <div className=" ">
-                    <h1 className="text-[14px] font-semibold">Delivery</h1>
-                    <div className="flex  py-2 border-b-1 border-gray-200">
-                      <div className="w-1/2  h-auto">
-                        <h1 className="text-[12px] font-semibold text-gray-500">
-                          Address
-                        </h1>
-                        <p className="text-[12px] font-sm text-gray-700 w-[90%] mt-1">
-                          {displayingOrder.address}
-                          <br></br>
-                          {displayingOrder.phoneNumber}
-                        </p>
-                      </div>
-                      <div className="w-1/2  h-auto">
-                        <h1 className="text-[12px] font-semibold text-gray-500">
-                          Delivery method
-                        </h1>
-                        <p className="text-[12px] font-sm text-gray-700 mt-1">
-                          {/* {displayingOrder.phoneNumber} */}
-                          Within 3-5 days
-                        </p>
-                      </div>
+
+                {/* Delivery Info */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-4">
+                    Delivery Information
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-semibold text-gray-700 mb-2">
+                        Address
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {displayingOrder.address}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {displayingOrder.phoneNumber}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-semibold text-gray-700 mb-2">
+                        Delivery Method
+                      </h3>
+                      <p className="text-sm text-gray-600">Within 3-5 days</p>
                     </div>
                   </div>
-                  <div className="">
-                    <h1 className="text-[14px] font-semibold mt-2">
-                      Order Summary
-                    </h1>
-                    <div className="flex justify-between mt-2 ">
-                      <h1 className="text-[12px] font-semibold text-gray-500">
-                        Total
-                      </h1>
-                      <h1 className="text-[12px] font-semibold text-gray-500 ">
-                        $ {displayingOrder.total.toFixed(2)}
-                      </h1>
+                </div>
+
+                {/* Order Summary */}
+                <div>
+                  <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+                  <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Total</span>
+                      <span className="font-semibold">
+                        ${displayingOrder.total.toFixed(2)}
+                      </span>
                     </div>
-                    <div className="flex justify-between mt-2 ">
-                      <h1 className="text-[12px] font-semibold text-gray-500">
-                        Discount
-                      </h1>
-                      <h1 className="text-[12px] font-semibold text-gray-500 ">
-                        $ {displayingOrder.total.toFixed(2)}
-                      </h1>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Discount</span>
+                      <span className="font-semibold">$0.00</span>
                     </div>
-                    <div className="flex justify-between mt-2 ">
-                      <h1 className="text-[12px] font-semibold text-gray-500">
-                        Net total
-                      </h1>
-                      <h1 className="text-[12px] font-semibold text-gray-500 ">
-                        $ {displayingOrder.total.toFixed(2)}
-                      </h1>
+                    <div className="border-t pt-2 flex justify-between">
+                      <span className="font-semibold text-gray-900">
+                        Net Total
+                      </span>
+                      <span className="font-bold text-green-600">
+                        ${displayingOrder.total.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          )}
-        </>
-      ) : (
-        <Loader />
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

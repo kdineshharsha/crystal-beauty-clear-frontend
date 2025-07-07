@@ -48,8 +48,8 @@ export default function Review() {
   };
 
   return (
-    <div className="w-full p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 mt-10 rounded-2xl shadow-2xl mx-auto pb-20">
-      <h2 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+    <div className="w-full p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 mt-10 rounded-2xl shadow-2xl mx-auto pb-20">
+      <h2 className="text-4xl font-bold text-black mb-8 text-center">
         Customer Reviews
       </h2>
       <div className="flex flex-col lg:flex-row lg:justify-between gap-8">
@@ -82,7 +82,7 @@ export default function Review() {
               <button
                 onClick={submitReview}
                 disabled={loading}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-accent text-white sm:px-8 px-4  py-3 rounded-xl hover:bg-accent-hover transition-all duration-200 font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -131,7 +131,7 @@ export default function Review() {
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
                         {review.username.charAt(0).toUpperCase()}
                       </div>
                       <div className="">
