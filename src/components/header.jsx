@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { LuShoppingCart } from "react-icons/lu";
 import { FiUser } from "react-icons/fi";
-import { RiShoppingBag4Line } from "react-icons/ri";
+import { RiShoppingBag4Line, RiUser3Line } from "react-icons/ri";
 import { PiHeartBold } from "react-icons/pi";
 import { FiMessageSquare } from "react-icons/fi";
 import { MdOutlineNotificationsNone } from "react-icons/md";
@@ -72,7 +72,7 @@ export default function Header() {
                 className={({ isActive }) =>
                   `relative px-3 py-2 rounded-lg transition-all duration-200 transform hover:scale-102 ${
                     isActive
-                      ? "text-white bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
+                      ? "text-white bg-gradient-to-r from-accent to-accent-hover"
                       : "hover:text-pink-600 hover:bg-pink-50 hover:shadow-md"
                   }`
                 }
@@ -146,6 +146,13 @@ export default function Header() {
           <UserData />
           <hr className="bg-gradient-to-r from-pink-300 to-purple-300 w-full mt-4 h-0.5 border-0" />
           <div className="w-full mt-4 space-y-2">
+            <Link
+              to="/profile"
+              className="hover:text-pink-600 text-gray-700 transition-all duration-300 flex items-center space-x-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:shadow-md transform hover:scale-105"
+            >
+              <RiUser3Line className="text-purple-500" />
+              <span className="font-medium">Profile</span>
+            </Link>
             <Link
               to="/orders"
               className="hover:text-pink-600 text-gray-700 transition-all duration-300 flex items-center space-x-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:shadow-md transform hover:scale-105"

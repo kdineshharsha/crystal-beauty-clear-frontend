@@ -97,7 +97,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 pb-8">
       {/* Header */}
-      <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white px-6 py-8 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white px-6 py-8 relative overflow-hidden rounded-b-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-6">

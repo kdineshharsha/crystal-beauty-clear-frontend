@@ -21,6 +21,7 @@ function ProductPage() {
     { id: "skincare", name: "Skincare", icon: "🧴" },
     { id: "fragrance", name: "Fragrance", icon: "💇" },
     { id: "eye", name: "Eye", icon: "👀" },
+    { id: "face", name: "Face", icon: "💆‍♀️" },
   ];
 
   useEffect(() => {

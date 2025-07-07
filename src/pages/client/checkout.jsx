@@ -331,13 +331,13 @@ export default function CheckoutPage() {
               <div className="space-y-4">
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal</span>
-                  <span>${getTotalForLabeledPrice().toFixed(2)}</span>
+                  <span>Rs.{getTotalForLabeledPrice().toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
                   <span>
-                    -${(getTotalForLabeledPrice() - getTotal()).toFixed(2)}
+                    -Rs.{(getTotalForLabeledPrice() - getTotal()).toFixed(2)}
                   </span>
                 </div>
 
@@ -349,7 +349,7 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between text-xl font-bold text-gray-900">
                     <span>Total</span>
-                    <span>${getTotal().toFixed(2)}</span>
+                    <span>Rs.{getTotal().toFixed(2)}</span>
                   </div>
                 </div>
               </div>

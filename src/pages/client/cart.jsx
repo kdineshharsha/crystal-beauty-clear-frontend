@@ -92,12 +92,12 @@ export default function CartPage() {
 
                           <div className="flex items-center gap-2 mt-2">
                             <span className="text-lg font-bold text-gray-900">
-                              ${item.price.toFixed(2)}
+                              Rs.{item.price.toFixed(2)}
                             </span>
                             {item.labeledPrice &&
                               item.labeledPrice > item.price && (
                                 <span className="text-sm text-gray-500 line-through">
-                                  ${item.labeledPrice.toFixed(2)}
+                                  Rs.{item.labeledPrice.toFixed(2)}
                                 </span>
                               )}
                           </div>
@@ -140,7 +140,7 @@ export default function CartPage() {
 
                         <div className="text-right">
                           <div className="text-lg font-bold text-accent">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            Rs.{(item.price * item.quantity).toFixed(2)}
                           </div>
                         </div>
                       </div>
@@ -163,12 +163,12 @@ export default function CartPage() {
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-lg font-bold text-gray-900">
-                            ${item.price.toFixed(2)}
+                            Rs.{item.price.toFixed(2)}
                           </span>
                           {item.labeledPrice &&
                             item.labeledPrice > item.price && (
                               <span className="text-sm text-gray-500 line-through">
-                                ${item.labeledPrice.toFixed(2)}
+                                Rs.{item.labeledPrice.toFixed(2)}
                               </span>
                             )}
                         </div>
@@ -201,7 +201,7 @@ export default function CartPage() {
 
                         <div className="text-right">
                           <div className="text-lg font-bold text-accent">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            Rs.{(item.price * item.quantity).toFixed(2)}
                           </div>
                         </div>
 
@@ -235,13 +235,13 @@ export default function CartPage() {
               <div className="space-y-4">
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal</span>
-                  <span>${getTotalForLabeledPrice().toFixed(2)}</span>
+                  <span>Rs.{getTotalForLabeledPrice().toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
                   <span>
-                    -${(getTotalForLabeledPrice() - getTotal()).toFixed(2)}
+                    -Rs.{(getTotalForLabeledPrice() - getTotal()).toFixed(2)}
                   </span>
                 </div>
 
@@ -254,7 +254,7 @@ export default function CartPage() {
                   <div className="flex justify-between text-xl font-bold text-gray-900">
                     <span>Total</span>
                     <span className="text-accent">
-                      ${getTotal().toFixed(2)}
+                      Rs.{getTotal().toFixed(2)}
                     </span>
                   </div>
                 </div>

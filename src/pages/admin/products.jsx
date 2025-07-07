@@ -275,10 +275,10 @@ export default function AdminProductsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                          ₹{product.price}
+                          Rs.{product.price}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-600">
-                          ₹{product.labeledPrice}
+                          Rs.{product.labeledPrice}
                         </td>
                         <td className="px-6 py-4">
                           <span

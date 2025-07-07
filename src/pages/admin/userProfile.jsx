@@ -39,6 +39,23 @@ export default function UserProfile() {
     fetchData();
   }, [userEmail]);
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "Processing":
+        return "bg-blue-100 text-blue-800";
+      case "Shipped":
+        return "bg-purple-100 text-purple-800";
+      case "Delivered":
+        return "bg-green-100 text-green-800";
+      case "Cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   if (!loaded) return <Loader />;
   if (!user)
     return (
@@ -173,7 +190,7 @@ export default function UserProfile() {
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Total</span>
                       <span className="text-lg font-bold text-gray-800">
-                        ₹{order.total}
+                        Rs.{order.total}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -210,79 +227,66 @@ export default function UserProfile() {
 
       {/* Modern Order Modal */}
       {modalIsDisplaying && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl">
-            {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800">
-                    Order Details
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    #{displayingOrder.orderId}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
+        <div className="fixed top-0 left-0 bg-black/50 backdrop-blur-sm w-full h-full flex justify-center items-center z-50">
+          <div className="w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl relative overflow-hidden mx-6">
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6">
+              <div className="flex justify-between items-center">
+                <h1 className="text-lg font-bold">
+                  Order ID: {displayingOrder.orderId}
+                </h1>
+                <div className="flex gap-2 items-center">
+                  {" "}
                   <span
-                    className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                      displayingOrder.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : displayingOrder.status === "Completed"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                      displayingOrder.status
+                    )}`}
                   >
                     {displayingOrder.status}
                   </span>
                   <button
-                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    className=" size-8 rounded-full shadow-lg flex justify-center items-center  bg-white hover:bg-gray-100 transition-colors z-100"
                     onClick={() => setModalIsDisplaying(false)}
                   >
-                    <IoMdClose className="text-gray-600" />
+                    <IoMdClose className="text-gray-600 " />
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Modal Content */}
-            <div className="overflow-y-auto max-h-[calc(90vh-200px)]">
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
               {/* Order Items */}
-              <div className="px-6 py-4">
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">
-                  Order Items
-                </h3>
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold mb-4">Order Items</h2>
                 <div className="space-y-3">
                   {displayingOrder.billItems.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl"
+                      className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
                     >
-                      <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-16 h-16 flex-shrink-0">
                         <img
                           src={item.image}
+                          className="w-full h-full object-cover rounded-lg"
                           alt={item.productName}
-                          className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-800 truncate">
-                          {item.productName}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          ID: {item.productId}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Qty: {item.quantity}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-gray-800">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          ${item.price.toFixed(2)} each
-                        </p>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <h3 className="font-semibold text-gray-900">
+                            {item.productName}
+                          </h3>
+                          <span className="font-semibold text-green-600">
+                            Rs.{(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center mt-1">
+                          <span className="text-sm text-gray-500">
+                            {item.productId}
+                          </span>
+                          <span className="text-sm text-gray-500">
+                            Qty: {item.quantity}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -290,67 +294,52 @@ export default function UserProfile() {
               </div>
 
               {/* Delivery Info */}
-              <div className="px-6 py-4 border-t border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">
+              <div className="mb-6 ">
+                <h2 className="text-lg font-semibold mb-4">
                   Delivery Information
-                </h3>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <h4 className="text-sm font-medium text-gray-600 mb-2">
-                      Delivery Address
-                    </h4>
-                    <p className="text-sm text-gray-800">
+                </h2>
+                <div className="flex  justify-center gap-4">
+                  <div className="bg-gray-50 p-4 rounded-lg w-1/2   ">
+                    <h3 className="font-semibold text-gray-700 mb-2">
+                      Address
+                    </h3>
+                    <p className="text-sm text-gray-600">
                       {displayingOrder.address}
                     </p>
-                    <p className="text-sm text-gray-800 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       {displayingOrder.phoneNumber}
                     </p>
                   </div>
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <h4 className="text-sm font-medium text-gray-600 mb-2">
+                  <div className="bg-gray-50 p-4 rounded-lg w-1/2  ">
+                    <h3 className="font-semibold text-gray-700 mb-2">
                       Delivery Method
-                    </h4>
-                    <p className="text-sm text-gray-800">Standard Delivery</p>
-                    <p className="text-sm text-gray-600">
-                      Within 3-5 business days
-                    </p>
+                    </h3>
+                    <p className="text-sm text-gray-600">Within 3-5 days</p>
                   </div>
                 </div>
               </div>
 
               {/* Order Summary */}
-              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">
-                  Order Summary
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Subtotal</span>
-                    <span className="text-sm font-medium text-gray-800">
-                      ${displayingOrder.total.toFixed(2)}
+              <div>
+                <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+                <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Total</span>
+                    <span className="font-semibold">
+                      Rs.{displayingOrder.total.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Discount</span>
-                    <span className="text-sm font-medium text-gray-800">
-                      $0.00
-                    </span>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Discount</span>
+                    <span className="font-semibold">Rs.0.00</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Delivery Fee</span>
-                    <span className="text-sm font-medium text-gray-800">
-                      Free
+                  <div className="border-t pt-2 flex justify-between">
+                    <span className="font-semibold text-gray-900">
+                      Net Total
                     </span>
-                  </div>
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-bold text-gray-800">
-                        Total
-                      </span>
-                      <span className="text-lg font-bold text-gray-800">
-                        ${displayingOrder.total.toFixed(2)}
-                      </span>
-                    </div>
+                    <span className="font-bold text-green-600">
+                      Rs.{displayingOrder.total.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>

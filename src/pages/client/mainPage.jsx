@@ -48,7 +48,9 @@ export default function MainPage() {
 
       <Trending />
       <WhatsNew />
+      <FlashSale />
       <SocialShowcase />
+      <AdPopupModal />
 
       {/* <ProductCategory
         title="Lip Collection"
@@ -58,32 +60,27 @@ export default function MainPage() {
       /> */}
       <ProductCategory
         title="Nail Collection"
-        buttonText="Shop Nails"
-        buttonLink="/products?category=nails"
+        buttonLink="/products?category=nail"
         category="nail"
       />
       <ProductCategory
         title="Face Collection"
-        buttonText="Shop Face"
         buttonLink="/products?category=face"
         category="face"
       />
 
       <ProductCategory
         title="Skin Care Collection"
-        buttonText="Shop Skin care"
         buttonLink="/products?category=skin"
         category="skincare"
       />
       <ProductCategory
         title="Eye Collection"
-        buttonText="Shop Eyes"
         buttonLink="/products?category=eye"
         category="eye"
       />
       <ProductCategory
         title="Fragreance Collection"
-        buttonText="Shop Fragrance"
         buttonLink="/products?category=fragrance"
         category="fragrance"
       />
@@ -95,9 +92,6 @@ export default function MainPage() {
             <h2 className="text-2xl font-bold tracking-wide">
               SHOP BY CATEGORY
             </h2>
-            <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-all">
-              Shop All <span>→</span>
-            </button>
           </div>
 
           <div
@@ -139,7 +133,7 @@ export default function MainPage() {
           </div>
         </div>
       </div>
-      <FlashSale />
+
       <Footer />
       <div className="fixed md:bottom-6 md:right-6 bottom-20 right-6 z-50 p-2 bg-white rounded-full shadow-lg">
         <Link to="whatsapp://send?phone=+94752552137&text=Hello%20Crystal%20Beauty%20Clear!">

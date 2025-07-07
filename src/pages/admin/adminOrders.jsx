@@ -112,23 +112,6 @@ export default function AdminOrders() {
     downloadRef.current.click();
   }
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Pending":
-        return <FaClock className="text-yellow-600" />;
-      case "Processing":
-        return <FaClipboardList className="text-blue-600" />;
-      case "Shipped":
-        return <FaTruck className="text-purple-600" />;
-      case "Delivered":
-        return <FaCheckCircle className="text-green-600" />;
-      case "Cancelled":
-        return <FaTimesCircle className="text-red-600" />;
-      default:
-        return <FaClock className="text-gray-600" />;
-    }
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case "Pending":
@@ -147,7 +130,7 @@ export default function AdminOrders() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-4 ">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white p-6 rounded-t-3xl">
@@ -440,26 +423,28 @@ export default function AdminOrders() {
         {/* Modal */}
         {modalIsDisplaying && (
           <div className="fixed top-0 left-0 bg-black/50 backdrop-blur-sm w-full h-full flex justify-center items-center z-50">
-            <div className="w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl relative overflow-hidden">
-              <button
-                className="absolute size-10 rounded-full shadow-lg flex justify-center items-center -top-4 -right-4 bg-white hover:bg-gray-100 transition-colors z-10"
-                onClick={() => setModalIsDisplaying(false)}
-              >
-                <IoMdClose className="text-gray-600" />
-              </button>
-
+            <div className="w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl relative overflow-hidden mx-6">
               <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6">
                 <div className="flex justify-between items-center">
                   <h1 className="text-lg font-bold">
                     Order ID: {displayingOrder.orderId}
                   </h1>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                      displayingOrder.status
-                    )}`}
-                  >
-                    {displayingOrder.status}
-                  </span>
+                  <div className="flex gap-2 items-center">
+                    {" "}
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                        displayingOrder.status
+                      )}`}
+                    >
+                      {displayingOrder.status}
+                    </span>
+                    <button
+                      className=" size-8 rounded-full shadow-lg flex justify-center items-center  bg-white hover:bg-gray-100 transition-colors z-100"
+                      onClick={() => setModalIsDisplaying(false)}
+                    >
+                      <IoMdClose className="text-gray-600 " />
+                    </button>
+                  </div>
                 </div>
               </div>
 
