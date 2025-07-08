@@ -251,58 +251,53 @@ export default function Order() {
               {/* Mobile Stats - Compact horizontal scroll */}
               <div className="sm:hidden p-4 border-b border-gray-200">
                 <div className="flex gap-3 overflow-x-auto pb-2">
-                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap "
+                    onClick={() => navigate("/orders")}
+                  >
                     <FaShoppingCart className="text-lg" />
                     <div>
                       <p className="text-xs opacity-90">Total</p>
-                      <p className="text-lg font-bold">
-                        {filteredOrders.length}
-                      </p>
+                      <p className="text-lg font-bold">{allOrders.length}</p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                  <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap"  onClick={() => navigate("/orders?status=Pending")}>
                     <FaClock className="text-lg" />
                     <div>
                       <p className="text-xs opacity-90">Pending</p>
                       <p className="text-lg font-bold">
-                        {
-                          filteredOrders.filter((o) => o.status === "Pending")
-                            .length
-                        }
+                        {allOrders.filter((o) => o.status === "Pending").length}
                       </p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                  <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap"  onClick={() => navigate("/orders?status=Shipped")}>
                     <FaTruck className="text-lg" />
                     <div>
                       <p className="text-xs opacity-90">Shipped</p>
                       <p className="text-lg font-bold">
-                        {
-                          filteredOrders.filter((o) => o.status === "Shipped")
-                            .length
-                        }
+                        {allOrders.filter((o) => o.status === "Shipped").length}
                       </p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                  <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap"  onClick={() => navigate("/orders?status=Delivered")}>
                     <FaCheckCircle className="text-lg" />
                     <div>
                       <p className="text-xs opacity-90">Delivered</p>
                       <p className="text-lg font-bold">
                         {
-                          filteredOrders.filter((o) => o.status === "Delivered")
+                          allOrders.filter((o) => o.status === "Delivered")
                             .length
                         }
                       </p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap"  onClick={() => navigate("/orders?status=Cancelled")}>
                     <FaTimesCircle className="text-lg" />
                     <div>
                       <p className="text-xs opacity-90">Cancelled</p>
                       <p className="text-lg font-bold">
                         {
-                          filteredOrders.filter((o) => o.status === "Cancelled")
+                          allOrders.filter((o) => o.status === "Cancelled")
                             .length
                         }
                       </p>
