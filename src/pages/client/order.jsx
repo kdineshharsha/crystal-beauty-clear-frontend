@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
+import axios, { all } from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import {
   FaShoppingCart,
@@ -13,9 +13,14 @@ import {
   FaBox,
 } from "react-icons/fa";
 import { FiTrash2 } from "react-icons/fi";
+import toast from "react-hot-toast";
+import Loader from "../../components/loader";
+import OrderSkeleton from "../../components/orderSkeleton";
 
 export default function Order() {
+  const [loaded, setLoaded] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const [modalIsDisplaying, setModalIsDisplaying] = useState(false);
   const [displayingOrder, setDisplayingOrder] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +29,7 @@ export default function Order() {
 
   const queryParams = new URLSearchParams(location.search);
   const status = queryParams.get("status");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -36,22 +42,27 @@ export default function Order() {
         );
 
         const email = userRes.data.user.email;
-        const url = status
-          ? `${
-              import.meta.env.VITE_BACKEND_URL
-            }/api/order/${email}?status=${status}`
-          : `${import.meta.env.VITE_BACKEND_URL}/api/order/${email}`;
+        const allOrdersRes = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/order/${email}`
+        );
 
-        const ordersRes = await axios.get(url);
-        setOrders(ordersRes.data);
-        console.log("Orders Data:", ordersRes.data);
+        const allData = allOrdersRes.data;
+        setAllOrders(allData); // ✅ Save full orders
+
+        const filtered =
+          status !== null
+            ? allData.filter((o) => o.status === status)
+            : allData;
+
+        setOrders(filtered); // ✅ Show filtered orders
+        setLoaded(true);
       } catch (err) {
         console.error("Error fetching orders:", err);
       }
     };
 
     fetchOrders();
-  }, [status, token]);
+  }, [status, token, loaded]);
 
   // Filter orders by orderId or product name
   const filteredOrders = orders.filter((order) => {
@@ -99,6 +110,25 @@ export default function Order() {
     }
   };
 
+  async function handleCancelOrder(orderId) {
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.put(
+        import.meta.env.VITE_BACKEND_URL + "/api/order/cancel/" + orderId,
+        {}, // empty body
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      toast.success("Order cancelled successfully");
+      setLoaded(false);
+    } catch (err) {
+      console.error("Error cancelling order:", err);
+      toast.error("Failed to cancel order. Please try again.");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 ">
       <div className="max-w-7xl mx-auto">
@@ -136,270 +166,296 @@ export default function Order() {
             </div>
           </div>
         </div>
-
-        {/* Orders Content */}
-        <div className="bg-white rounded-b-3xl shadow-2xl overflow-hidden">
-          {/* Stats Cards */}
-          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-4 p-6 border-b border-gray-200">
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl">
-              <div className="flex items-center gap-3">
-                <FaShoppingCart className="text-2xl" />
-                <div>
-                  <p className="text-sm opacity-90">Total Orders</p>
-                  <p className="text-2xl font-bold">{filteredOrders.length}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-4 rounded-xl">
-              <div className="flex items-center gap-3">
-                <FaClock className="text-2xl" />
-                <div>
-                  <p className="text-sm opacity-90">Pending</p>
-                  <p className="text-2xl font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Pending")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-xl">
-              <div className="flex items-center gap-3">
-                <FaTruck className="text-2xl" />
-                <div>
-                  <p className="text-sm opacity-90">Shipped</p>
-                  <p className="text-2xl font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Shipped")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl">
-              <div className="flex items-center gap-3">
-                <FaCheckCircle className="text-2xl" />
-                <div>
-                  <p className="text-sm opacity-90">Delivered</p>
-                  <p className="text-2xl font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Delivered")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-xl">
-              <div className="flex items-center gap-3">
-                <FaTimesCircle className="text-2xl" />
-                <div>
-                  <p className="text-sm opacity-90">Cancelled</p>
-                  <p className="text-2xl font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Cancelled")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Stats - Compact horizontal scroll */}
-          <div className="sm:hidden p-4 border-b border-gray-200">
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
-                <FaShoppingCart className="text-lg" />
-                <div>
-                  <p className="text-xs opacity-90">Total</p>
-                  <p className="text-lg font-bold">{filteredOrders.length}</p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
-                <FaClock className="text-lg" />
-                <div>
-                  <p className="text-xs opacity-90">Pending</p>
-                  <p className="text-lg font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Pending")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
-                <FaTruck className="text-lg" />
-                <div>
-                  <p className="text-xs opacity-90">Shipped</p>
-                  <p className="text-lg font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Shipped")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
-                <FaCheckCircle className="text-lg" />
-                <div>
-                  <p className="text-xs opacity-90">Delivered</p>
-                  <p className="text-lg font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Delivered")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
-                <FaTimesCircle className="text-lg" />
-                <div>
-                  <p className="text-xs opacity-90">Cancelled</p>
-                  <p className="text-lg font-bold">
-                    {
-                      filteredOrders.filter((o) => o.status === "Cancelled")
-                        .length
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Orders Grid */}
-          <div className="p-6">
-            {filteredOrders.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FaShoppingCart className="text-gray-400 text-3xl" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No orders found
-                </h3>
-                <p className="text-gray-500">
-                  {searchTerm
-                    ? "Try adjusting your search terms"
-                    : "You haven't placed any orders yet"}
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-                {filteredOrders.map((order) => (
-                  <div
-                    key={order.orderId}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer transform hover:scale-103"
-                    onClick={() => {
-                      setDisplayingOrder(order);
-                      setModalIsDisplaying(true);
-                    }}
-                  >
-                    {/* Order Header */}
-                    <div className="p-6 border-b border-gray-100">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">
-                            Order ID
-                          </p>
-                          <p className="text-lg font-bold text-gray-900 font-mono">
-                            {order.orderId}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                              order.status
-                            )}`}
-                          >
-                            {getStatusIcon(order.status)}
-                            {order.status}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <p className="text-xs text-gray-500 font-medium">
-                            Total Amount
-                          </p>
-                          <p className="text-xl font-bold text-accent">
-                            Rs.{order.total.toFixed(2)}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500 font-medium">
-                            Order Date
-                          </p>
-                          <p className="text-sm font-semibold text-gray-900">
-                            {new Date(order.date).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Order Items Preview */}
-                    <div className="p-6">
-                      <h3 className="text-sm font-semibold text-gray-700 mb-3">
-                        Items ({order.billItems.length})
-                      </h3>
-                      <div className="space-y-3">
-                        {order.billItems.slice(0, 2).map((item, idx) => (
-                          <div key={idx} className="flex items-center gap-3">
-                            <div className="w-12 h-12 flex-shrink-0">
-                              <img
-                                src={item.image}
-                                alt={item.productName}
-                                className="w-full h-full rounded-lg object-cover border border-gray-200"
-                                onError={(e) =>
-                                  (e.target.src =
-                                    "https://via.placeholder.com/48?text=No+Image")
-                                }
-                              />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">
-                                {item.productName}
-                              </p>
-                              <div className="flex justify-between items-center">
-                                <span className="text-xs text-gray-500">
-                                  Qty: {item.quantity}
-                                </span>
-                                <span className="text-sm font-semibold text-gray-900">
-                                  Rs.{(item.price * item.quantity).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                        {order.billItems.length > 2 && (
-                          <div className="text-center">
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                              +{order.billItems.length - 2} more items
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* View Details Button */}
-                    <div className="px-6 pb-6 flex justify-end gap-3">
-                      <button className="w-full bg-gradient-to-r from-accent to-accent-hover hover:bg-accent-hover text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-103 shadow-lg">
-                        View Details
-                      </button>
-                      {order.status === "Pending" && (
-                        <button className="w-auto bg-red-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-103 shadow-lg">
-                          <FiTrash2 size={16} />
-                        </button>
-                      )}
+        {loaded ? (
+          <>
+            {/* Orders Content */}
+            <div className="bg-white rounded-b-3xl shadow-2xl overflow-hidden">
+              {/* Stats Cards */}
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-4 p-6 border-b border-gray-200">
+                <div
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl"
+                  onClick={() => navigate("/orders")}
+                >
+                  <div className="flex items-center gap-3">
+                    <FaShoppingCart className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Total Orders</p>
+                      <p className="text-2xl font-bold">{allOrders.length}</p>
                     </div>
                   </div>
-                ))}
+                </div>
+                <div
+                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-4 rounded-xl"
+                  onClick={() => navigate("/orders?status=Pending")}
+                >
+                  <div className="flex items-center gap-3">
+                    <FaClock className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Pending</p>
+                      <p className="text-2xl font-bold">
+                        {allOrders.filter((o) => o.status === "Pending").length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-xl"
+                  onClick={() => navigate("/orders?status=Shipped")}
+                >
+                  <div className="flex items-center gap-3">
+                    <FaTruck className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Shipped</p>
+                      <p className="text-2xl font-bold">
+                        {allOrders.filter((o) => o.status === "Shipped").length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl"
+                  onClick={() => navigate("/orders?status=Delivered")}
+                >
+                  <div className="flex items-center gap-3">
+                    <FaCheckCircle className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Delivered</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          allOrders.filter((o) => o.status === "Delivered")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-xl"
+                  onClick={() => navigate("/orders?status=Cancelled")}
+                >
+                  <div className="flex items-center gap-3">
+                    <FaTimesCircle className="text-2xl" />
+                    <div>
+                      <p className="text-sm opacity-90">Cancelled</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          allOrders.filter((o) => o.status === "Cancelled")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
+
+              {/* Mobile Stats - Compact horizontal scroll */}
+              <div className="sm:hidden p-4 border-b border-gray-200">
+                <div className="flex gap-3 overflow-x-auto pb-2">
+                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                    <FaShoppingCart className="text-lg" />
+                    <div>
+                      <p className="text-xs opacity-90">Total</p>
+                      <p className="text-lg font-bold">
+                        {filteredOrders.length}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                    <FaClock className="text-lg" />
+                    <div>
+                      <p className="text-xs opacity-90">Pending</p>
+                      <p className="text-lg font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Pending")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                    <FaTruck className="text-lg" />
+                    <div>
+                      <p className="text-xs opacity-90">Shipped</p>
+                      <p className="text-lg font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Shipped")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                    <FaCheckCircle className="text-lg" />
+                    <div>
+                      <p className="text-xs opacity-90">Delivered</p>
+                      <p className="text-lg font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Delivered")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap">
+                    <FaTimesCircle className="text-lg" />
+                    <div>
+                      <p className="text-xs opacity-90">Cancelled</p>
+                      <p className="text-lg font-bold">
+                        {
+                          filteredOrders.filter((o) => o.status === "Cancelled")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Orders Grid */}
+              <div className="sm:p-6 p-4">
+                {filteredOrders.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FaShoppingCart className="text-gray-400 text-3xl" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      No orders found
+                    </h3>
+                    <p className="text-gray-500">
+                      {searchTerm
+                        ? "Try adjusting your search terms"
+                        : "You haven't placed any orders yet"}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                    {filteredOrders.map((order) => (
+                      <div
+                        key={order.orderId}
+                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer transform hover:scale-103"
+                      >
+                        {/* Order Header */}
+                        <div className="p-6 border-b border-gray-100">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">
+                                Order ID
+                              </p>
+                              <p className="text-lg font-bold text-gray-900 font-mono">
+                                {order.orderId}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                                  order.status
+                                )}`}
+                              >
+                                {getStatusIcon(order.status)}
+                                {order.status}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <p className="text-xs text-gray-500 font-medium">
+                                Total Amount
+                              </p>
+                              <p className="text-xl font-bold text-accent">
+                                Rs.{order.total.toFixed(2)}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 font-medium">
+                                Order Date
+                              </p>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {new Date(order.date).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Order Items Preview */}
+                        <div className="p-6">
+                          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+                            Items ({order.billItems.length})
+                          </h3>
+                          <div className="space-y-3">
+                            {order.billItems.slice(0, 2).map((item, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center gap-3"
+                              >
+                                <div className="w-12 h-12 flex-shrink-0">
+                                  <img
+                                    src={item.image}
+                                    alt={item.productName}
+                                    className="w-full h-full rounded-lg object-cover border border-gray-200"
+                                    onError={(e) =>
+                                      (e.target.src =
+                                        "https://via.placeholder.com/48?text=No+Image")
+                                    }
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-gray-900 truncate">
+                                    {item.productName}
+                                  </p>
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-xs text-gray-500">
+                                      Qty: {item.quantity}
+                                    </span>
+                                    <span className="text-sm font-semibold text-gray-900">
+                                      Rs.
+                                      {(item.price * item.quantity).toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {order.billItems.length > 2 && (
+                              <div className="text-center">
+                                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                                  +{order.billItems.length - 2} more items
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* View Details Button */}
+                        <div className="px-6 pb-6 flex justify-end items-center gap-3">
+                          <button
+                            className="w-full bg-gradient-to-r from-accent to-accent-hover hover:bg-accent-hover text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-103 shadow-lg"
+                            onClick={() => {
+                              setDisplayingOrder(order);
+                              setModalIsDisplaying(true);
+                            }}
+                          >
+                            View Details
+                          </button>
+                          {order.status === "Pending" && (
+                            <button
+                              className="w-full ring-2 ring-red-500  text-red-500 font-bold py-2.5 px-4 rounded-xl transition-all duration-200 transform hover:scale-103 shadow-lg"
+                              onClick={() => handleCancelOrder(order.orderId)}
+                            >
+                              {/* <FiTrash2 size={16} /> */}
+                              Cancel Order
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <OrderSkeleton />
+        )}
 
         {/* Order Details Modal */}
         {modalIsDisplaying && displayingOrder && (

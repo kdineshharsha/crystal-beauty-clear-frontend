@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -10,26 +11,31 @@ export default function EditProfile() {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "", // ✅ add this
+    phone: "",
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(
+        import.meta.env.VITE_BACKEND_URL + "/api/user/current",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const { firstName, lastName, email, phone } = res.data.user;
+      setFormData({ firstName, lastName, email, phone });
+      setLoaded(true);
+    } catch (err) {
+      console.error("Profile load error:", err);
+      toast.error("Failed to load profile.");
+    }
+  };
 
   useEffect(() => {
     if (token) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/user/current", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          const { firstName, lastName, email, phone } = res.data.user;
-          setFormData({ firstName, lastName, email, phone });
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Profile load error:", err);
-          setLoading(false);
-        });
+      fetchProfile();
     }
   }, [token]);
 
@@ -50,13 +56,16 @@ export default function EditProfile() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      navigate("/profile");
+
+      toast.success("Profile updated successfully!");
+      fetchProfile(); // Re-fetch profile after update
     } catch (err) {
       console.error("Profile update error:", err);
+      toast.error("Failed to update profile.");
     }
   };
 
-  if (loading) {
+  if (!loaded) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-600">
         Loading profile...
@@ -107,7 +116,6 @@ export default function EditProfile() {
               className="w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-accent focus:outline-none transition"
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Email
