@@ -1,12 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
   function sendEmail() {
     axios
       .post(import.meta.env.VITE_BACKEND_URL + "/api/user/sendMail", {
@@ -39,6 +41,7 @@ export default function ForgetPassword() {
       .then((response) => {
         console.log(response.data);
         toast.success("Password changed successfully");
+        navigate("/login");
       })
       .catch((error) => {
         console.log(error);

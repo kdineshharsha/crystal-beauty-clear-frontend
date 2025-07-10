@@ -23,6 +23,7 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
+  const [beautyPoints, setBeautyPoints] = useState(0);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -55,6 +56,7 @@ export default function Profile() {
 
         setWishlistCount(wishlistRes.data.length);
         setOrderCount(ordersRes.data.length);
+        setBeautyPoints(ordersRes.data.length * 10);
       } catch (err) {
         console.error("❌ Error fetching profile data:", err);
         setUser(null);
@@ -146,7 +148,7 @@ export default function Profile() {
               },
               {
                 label: "Beauty Points",
-                count: 55,
+                count: beautyPoints || 0,
                 icon: FaMagic,
                 color: "from-yellow-400 to-yellow-600",
               },

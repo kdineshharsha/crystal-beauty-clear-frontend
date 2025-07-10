@@ -10,8 +10,27 @@ import {
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = async () => {
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/api/subscribe",
+        { email }
+      );
+      toast.success("Subscription successful! 🎉");
+      setEmail("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Subscription failed. Please try again.");
+    }
+  };
+
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
       {/* Decorative Background Elements */}
@@ -40,11 +59,16 @@ export default function Footer() {
                   <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="email"
+                    value={email}
                     placeholder="Enter your email"
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent placeholder-gray-400 text-white backdrop-blur-sm"
                   />
                 </div>
-                <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 hover:scale-105 shadow-lg">
+                <button
+                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 hover:scale-105 shadow-lg"
+                  onClick={handleSubscribe}
+                >
                   Subscribe
                 </button>
               </div>

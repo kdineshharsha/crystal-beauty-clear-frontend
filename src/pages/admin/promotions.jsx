@@ -7,6 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Loader from "../../components/loader";
 import PopupAdList from "../../components/popupAdvertisement";
+import NewsletterSender from "../../components/newsLetterSender";
 
 export default function Promotions() {
   const [adList, setAdList] = useState([]);
@@ -160,6 +161,7 @@ export default function Promotions() {
         </div>
       </div>{" "}
       <PopupAdList />
+      <NewsletterSender />
     </div>
   );
 }

@@ -20,6 +20,7 @@ export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [saveAddress, setSaveAddress] = useState(false);
 
   function placeOrder() {
     if (!name || !address || !phone) {
@@ -32,6 +33,7 @@ export default function CheckoutPage() {
       address: address,
       phoneNumber: phone,
       billItems: [],
+      saveAddress: saveAddress,
     };
     for (let i = 0; i < cart.length; i++) {
       orderData.billItems[i] = {
@@ -313,6 +315,21 @@ export default function CheckoutPage() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
+                </div>
+                <div className="flex items-center mt-2">
+                  <input
+                    id="saveAddress"
+                    type="checkbox"
+                    checked={saveAddress}
+                    onChange={(e) => setSaveAddress(e.target.checked)}
+                    className="mr-2 w-4 h-4 text-accent focus:ring-accent border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="saveAddress"
+                    className="text-sm text-gray-700"
+                  >
+                    Save this address to my profile
+                  </label>
                 </div>
               </div>
             </div>

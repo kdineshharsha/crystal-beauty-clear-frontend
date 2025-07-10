@@ -16,6 +16,7 @@ import Wishlist from "./client/wishlist";
 import Settings from "./client/settings";
 import EditProfile from "./client/edit-profile";
 import About from "./client/aboutUs";
+import AddressBook from "./client/addressBook";
 
 export default function HomePage() {
   return (
@@ -37,6 +38,8 @@ export default function HomePage() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/about" element={<About />} />
+          <Route path="/address-book" element={<AddressBook />} />
+
           <Route path="/settings/edit-profile" element={<EditProfile />} />
         </Routes>
       </div>
