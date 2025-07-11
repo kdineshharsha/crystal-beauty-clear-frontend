@@ -11,7 +11,7 @@ export default function Trending() {
   useEffect(() => {
     if (!productLoaded) {
       axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/product/")
+        .get(import.meta.env.VITE_BACKEND_URL + "/api/product/trending")
         .then((res) => {
           setProductList(res.data);
           setProductLoaded(true);
