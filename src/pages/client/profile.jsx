@@ -256,7 +256,7 @@ export default function Profile() {
             {
               icon: FaHeadset,
               label: "Beauty Support",
-              path: "/support",
+              path: "/contacts",
               desc: "Get help with products",
             },
             {

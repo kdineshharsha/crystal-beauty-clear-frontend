@@ -169,7 +169,7 @@ export default function Settings() {
               localStorage.removeItem("token");
               navigate("/login");
             }}
-            className="w-full py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-semibold rounded-2xl shadow-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 transform hover:scale-105 flex items-center justify-center gap-3"
+            className="w-full py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-semibold rounded-2xl shadow-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 transform hover:scale-102 flex items-center justify-center gap-3"
           >
             <FaSignOutAlt className="text-lg" />
             Sign Out

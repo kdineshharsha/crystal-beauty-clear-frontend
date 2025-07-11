@@ -17,6 +17,8 @@ import Settings from "./client/settings";
 import EditProfile from "./client/edit-profile";
 import About from "./client/aboutUs";
 import AddressBook from "./client/addressBook";
+import EditAddress from "./client/edit-address";
+import AddAddress from "./client/addAddress";
 
 export default function HomePage() {
   return (
@@ -39,6 +41,8 @@ export default function HomePage() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/about" element={<About />} />
           <Route path="/address-book" element={<AddressBook />} />
+          <Route path="/edit-address" element={<EditAddress />} />
+          <Route path="/add-address" element={<AddAddress />} />
 
           <Route path="/settings/edit-profile" element={<EditProfile />} />
         </Routes>

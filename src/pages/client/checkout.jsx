@@ -21,12 +21,18 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [saveAddress, setSaveAddress] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [useDefaultAddress, setUseDefaultAddress] = useState(false);
 
   function placeOrder() {
+    if (isPlacingOrder) return; // Prevent double click
+
     if (!name || !address || !phone) {
       toast.error("Please fill in all required fields");
       return;
     }
+
+    setIsPlacingOrder(true); // Start loading
 
     const orderData = {
       name: name,
@@ -35,6 +41,7 @@ export default function CheckoutPage() {
       billItems: [],
       saveAddress: saveAddress,
     };
+
     for (let i = 0; i < cart.length; i++) {
       orderData.billItems[i] = {
         productId: cart[i].productId,
@@ -42,6 +49,7 @@ export default function CheckoutPage() {
         quantity: cart[i].quantity,
       };
     }
+
     const token = localStorage.getItem("token");
     axios
       .post(import.meta.env.VITE_BACKEND_URL + "/api/order", orderData, {
@@ -51,14 +59,57 @@ export default function CheckoutPage() {
       })
       .then(() => {
         toast.success("Order placed successfully");
-        console.log(orderData);
         navigate("/");
       })
       .catch((error) => {
         console.log(error);
         toast.error("Order placement failed");
+      })
+      .finally(() => {
+        setIsPlacingOrder(false); // Reset loading state
       });
   }
+
+  const handleUseDefaultToggle = async (e) => {
+    const checked = e.target.checked;
+    setUseDefaultAddress(checked);
+
+    if (checked) {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/user/current`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const user = res.data.user;
+        const defaultAddress = user?.savedAddresses?.find(
+          (addr) => addr.isDefault === true
+        );
+
+        if (defaultAddress) {
+          setName(defaultAddress.fullName || "");
+          setPhone(defaultAddress.phone || "");
+          setAddress(defaultAddress.address || "");
+        } else {
+          toast.error("No default address found.");
+          setUseDefaultAddress(false);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        toast.error("Failed to load default address.");
+        setUseDefaultAddress(false);
+      }
+    } else {
+      // Uncheck: Clear fields
+      setName("");
+      setPhone("");
+      setAddress("");
+    }
+  };
 
   function getTotal() {
     let total = 0;
@@ -273,6 +324,22 @@ export default function CheckoutPage() {
                   Delivery Information
                 </h2>
               </div>
+              {/* dEFAULT ADDRESS BUTTON */}
+              <div className="flex items-center mb-4">
+                <input
+                  id="useDefaultAddress"
+                  type="checkbox"
+                  checked={useDefaultAddress}
+                  onChange={handleUseDefaultToggle}
+                  className="w-4 h-4 text-accent border-gray-300 rounded mr-2"
+                />
+                <label
+                  htmlFor="useDefaultAddress"
+                  className="text-sm text-gray-700"
+                >
+                  Use my default saved address
+                </label>
+              </div>
 
               <div className="space-y-4">
                 <div>
@@ -316,17 +383,21 @@ export default function CheckoutPage() {
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
+
                 <div className="flex items-center mt-2">
                   <input
                     id="saveAddress"
                     type="checkbox"
                     checked={saveAddress}
                     onChange={(e) => setSaveAddress(e.target.checked)}
-                    className="mr-2 w-4 h-4 text-accent focus:ring-accent border-gray-300 rounded"
+                    disabled={useDefaultAddress} // 💡 disables it when default address is selected
+                    className="mr-2 w-4 h-4 text-accent focus:ring-accent border-gray-300 rounded disabled:opacity-50"
                   />
                   <label
                     htmlFor="saveAddress"
-                    className="text-sm text-gray-700"
+                    className={`text-sm ${
+                      useDefaultAddress ? "text-gray-400" : "text-gray-700"
+                    }`}
                   >
                     Save this address to my profile
                   </label>
@@ -372,10 +443,15 @@ export default function CheckoutPage() {
               </div>
 
               <button
-                className="w-full mt-6 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                className={`w-full mt-6 ${
+                  isPlacingOrder
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gray-900 hover:bg-gray-800"
+                } text-white font-semibold py-4 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2`}
                 onClick={placeOrder}
+                disabled={isPlacingOrder}
               >
-                Place Order
+                {isPlacingOrder ? "Placing Order..." : "Place Order"}
               </button>
 
               <div className="mt-4 text-center">

@@ -84,7 +84,7 @@ export default function ProductCard({
 
           {/* Price Section - Fixed height */}
           <div className="flex items-center  justify-between  my-1">
-            <div className="flex items-center  justify-between w-full">
+            <div className="flex items-center  justify-between w-full gap-x-0.5">
               <span className="text-md sm:text-xl font-bold text-gray-900">
                 Rs. {product.price.toFixed(2)}
               </span>

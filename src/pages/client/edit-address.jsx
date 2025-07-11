@@ -1,45 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaUserEdit } from "react-icons/fa";
-import { User, Phone, Mail, Save } from "lucide-react";
+import { FaAddressBook, FaArrowLeft } from "react-icons/fa";
+import { User, Phone, Home, Save } from "lucide-react";
 
-export default function EditProfile() {
+export default function EditAddress() {
   const navigate = useNavigate();
+  const location = useLocation();
   const token = localStorage.getItem("token");
 
+  const { address } = location.state || {};
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    fullName: address?.fullName || "",
+    phone: address?.phone || "",
+    address: address?.address || "",
   });
 
-  const [focusedField, setFocusedField] = useState(null);
-  const [loaded, setLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const fetchProfile = async () => {
-    try {
-      const res = await axios.get(
-        import.meta.env.VITE_BACKEND_URL + "/api/user/current",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const { firstName, lastName, email, phone } = res.data.user;
-      setFormData({ firstName, lastName, email, phone });
-      setLoaded(true);
-    } catch (err) {
-      console.error("Profile load error:", err);
-      toast.error("Failed to load profile.");
-    }
-  };
-
-  useEffect(() => {
-    if (token) fetchProfile();
-  }, [token]);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -50,36 +30,33 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!address?._id) {
+      toast.error("Missing address ID. Cannot update.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       await axios.put(
-        import.meta.env.VITE_BACKEND_URL + "/api/user/update",
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/address/${address._id}`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      toast.success("Profile updated successfully!");
-      fetchProfile();
+      toast.success("Address updated successfully!");
+      navigate("/address-book");
     } catch (err) {
-      console.error("Profile update error:", err);
-      toast.error("Failed to update profile.");
+      console.error("❌ Failed to update address:", err);
+      toast.error("Failed to update address.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!loaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600">
-        Loading profile...
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100 relative overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white sm:p-6 p-4 shadow-lg">
         <div className="flex items-center gap-4">
@@ -91,73 +68,49 @@ export default function EditProfile() {
           </button>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center">
-              <FaUserEdit className="text-white" />
+              <FaAddressBook className="text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Edit Profile</h1>
-              <p className="text-sm text-gray-300">Update your information</p>
+              <h1 className="text-2xl font-bold">Edit Address</h1>
+              <p className="text-sm text-gray-300">
+                Update your saved location
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Form */}
-      <div className="relative z-10 px-4 py-10 max-w-md mx-auto">
+      <div className="relative z-10 px-4 py-8 max-w-md mx-auto">
         <div className="bg-white/90 backdrop-blur-xl rounded-xl shadow-2xl border border-white/30 p-8 transition-all duration-300">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* First Name */}
+            {/* Full Name */}
             <div className="relative">
               <label className="block text-sm font-semibold text-slate-700 mb-3">
-                First Name
+                Full Name
               </label>
               <div className="relative">
                 <User
                   className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
-                    focusedField === "firstName"
+                    focusedField === "fullName"
                       ? "text-accent"
                       : "text-slate-400"
                   }`}
                 />
                 <input
-                  name="firstName"
-                  value={formData.firstName}
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
                   onChange={handleChange}
-                  onFocus={() => setFocusedField("firstName")}
+                  onFocus={() => setFocusedField("fullName")}
                   onBlur={() => setFocusedField(null)}
-                  placeholder="Enter your first name"
+                  placeholder="Enter your full name"
                   className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-accent focus:border-transparent focus:bg-white transition-all duration-300 text-slate-900 placeholder-slate-400 outline-none"
                   required
                 />
               </div>
             </div>
 
-            {/* Last Name */}
-            <div className="relative">
-              <label className="block text-sm font-semibold text-slate-700 mb-3">
-                Last Name
-              </label>
-              <div className="relative">
-                <User
-                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
-                    focusedField === "lastName"
-                      ? "text-accent"
-                      : "text-slate-400"
-                  }`}
-                />
-                <input
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("lastName")}
-                  onBlur={() => setFocusedField(null)}
-                  placeholder="Enter your last name"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-accent focus:border-transparent focus:bg-white transition-all duration-300 text-slate-900 placeholder-slate-400 outline-none"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Phone */}
+            {/* Phone Number */}
             <div className="relative">
               <label className="block text-sm font-semibold text-slate-700 mb-3">
                 Phone Number
@@ -169,6 +122,7 @@ export default function EditProfile() {
                   }`}
                 />
                 <input
+                  type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
@@ -181,23 +135,34 @@ export default function EditProfile() {
               </div>
             </div>
 
-            {/* Email */}
+            {/* Address */}
             <div className="relative">
               <label className="block text-sm font-semibold text-slate-700 mb-3">
-                Email
+                Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input
-                  type="email"
-                  value={formData.email}
-                  disabled
-                  className="w-full pl-12 pr-4 py-4 bg-gray-100 border border-gray-300 rounded-2xl text-gray-500 cursor-not-allowed"
+                <Home
+                  className={`absolute left-4 top-6 w-5 h-5 transition-colors duration-300 ${
+                    focusedField === "address"
+                      ? "text-accent"
+                      : "text-slate-400"
+                  }`}
+                />
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("address")}
+                  onBlur={() => setFocusedField(null)}
+                  placeholder="Enter your complete address"
+                  rows={3}
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-accent focus:border-transparent focus:bg-white transition-all duration-300 text-slate-900 placeholder-slate-400 resize-none outline-none"
+                  required
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Save Button */}
             <button
               type="submit"
               disabled={isLoading}

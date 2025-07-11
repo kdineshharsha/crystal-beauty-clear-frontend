@@ -9,6 +9,8 @@ import {
   FiPlus,
 } from "react-icons/fi";
 import { FaArrowLeft, FaAddressBook, FaHome } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { GoTrash } from "react-icons/go";
 
 export default function AddressBook() {
   const navigate = useNavigate();
@@ -72,6 +74,22 @@ export default function AddressBook() {
     }
   };
 
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/address/${addressId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      toast.success("Address deleted!");
+      setAddresses((prev) => prev.filter((addr) => addr._id !== addressId));
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to delete address.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       {/* Header */}
@@ -122,18 +140,21 @@ export default function AddressBook() {
           <>
             {/* Add New Address Button */}
             <div className="mb-6">
-              <button className="w-full py-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white font-semibold rounded-2xl shadow-lg hover:from-pink-600 hover:to-pink-700 transition-all duration-200 transform hover:scale-101 flex items-center justify-center gap-3">
+              <button
+                className="w-full py-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white font-semibold rounded-2xl shadow-lg hover:from-pink-600 hover:to-pink-700 transition-all duration-200 transform hover:scale-101 flex items-center justify-center gap-3"
+                onClick={() => navigate("/add-address")}
+              >
                 <FiPlus className="text-lg" />
                 Add New Address
               </button>
             </div>
 
             {/* Address Cards */}
-            <div className="space-y-4">
+            <div className="space-y-4 md:grid  md:grid-cols-2 gap-4 ">
               {addresses.map((addr, index) => (
                 <div
                   key={index}
-                  className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-200 hover:shadow-xl ${
+                  className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-200 hover:shadow-xl h-full ${
                     addr.isDefault ? "ring-2 ring-green-500" : ""
                   }`}
                 >
@@ -165,21 +186,6 @@ export default function AddressBook() {
                           )}
                         </div>
                       </div>
-                      <button className="text-gray-400 hover:text-pink-500 transition-colors">
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                          />
-                        </svg>
-                      </button>
                     </div>
 
                     <div className="space-y-3">
@@ -196,17 +202,30 @@ export default function AddressBook() {
                     </div>
 
                     <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100">
-                      <button className="flex-1 py-2 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-200">
+                      <button
+                        className="flex-1 py-2 px-4 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all duration-200"
+                        onClick={() =>
+                          navigate("/edit-address", {
+                            state: { address: addr },
+                          })
+                        }
+                      >
                         Edit
                       </button>
                       {!addr.isDefault && (
                         <button
                           onClick={() => handleSetDefault(index)}
-                          className="flex-1 py-2 px-4 bg-pink-100 text-pink-700 font-medium rounded-xl hover:bg-pink-200 transition-all duration-200"
+                          className="flex-1 py-2 px-4 bg-pink-100  text-pink-700 font-medium rounded-lg hover:bg-pink-200 transition-all duration-200"
                         >
                           Set as Default
                         </button>
                       )}
+                      <button
+                        onClick={() => handleDeleteAddress(addr._id)}
+                        className="px-3 py-1 rounded-lg bg-red-500 text-lg hover:bg-red-600 text-white transition-all duration-200 transform hover:scale-103"
+                      >
+                        <GoTrash />
+                      </button>
                     </div>
                   </div>
                 </div>
