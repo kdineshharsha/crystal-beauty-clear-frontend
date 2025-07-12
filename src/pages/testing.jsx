@@ -1,39 +1,28 @@
-import React, { useState } from "react";
-
-export default function ImageSlider({ images }) {
-  const [activeImage, setActiveImage] = useState(images[0]);
-
+// components/productSkeleton.jsx
+export default function ProductSkeleton() {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-primary py-8 px-4">
-      <div className="flex flex-col-reverse md:flex-row items-center gap-6 bg-white p-6 rounded-2xl shadow-2xl max-w-5xl">
-        {/* Thumbnails */}
-        <div className="flex flex-row md:flex-col gap-4 bg-pink-100 p-4 rounded-lg shadow-lg">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              onClick={() => setActiveImage(image)}
-              className={`border-2 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
-                activeImage === image
-                  ? "border-accent scale-105 shadow-md"
-                  : "border-transparent opacity-70 hover:opacity-100"
-              }`}
-            >
-              <img
-                src={image}
-                alt={`Thumbnail ${index + 1}`}
-                className="w-20 h-16 md:w-24 md:h-20 object-cover"
-              />
-            </div>
-          ))}
-        </div>
+    <div className="w-full sm:flex animate-pulse bg-white">
+      {/* Image Skeleton */}
+      <div className="sm:w-1/2 w-full h-[400px] bg-gray-200 flex items-center justify-center">
+        <div className="w-[80%] h-[80%] bg-gray-300 rounded-lg"></div>
+      </div>
 
-        {/* Main Image */}
-        <div className="w-full sm:w-[70%] max-h-[400px] aspect-square rounded-xl bg-secondary p-1 shadow-xl">
-          <img
-            src={activeImage}
-            alt="Main product"
-            className="w-full h-full object-contain rounded-lg"
-          />
+      {/* Details Skeleton */}
+      <div className="sm:w-1/2 w-full p-10 flex flex-col gap-4">
+        <div className="h-8 bg-gray-300 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+        <div className="h-6 bg-gray-300 rounded w-1/4 mt-2"></div>
+
+        <hr className="my-4" />
+
+        <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+        <div className="h-4 bg-gray-300 rounded w-full"></div>
+        <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+
+        <div className="flex gap-4 mt-6">
+          <div className="h-10 w-28 bg-gray-300 rounded"></div>
+          <div className="h-10 w-28 bg-gray-300 rounded"></div>
+          <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
         </div>
       </div>
     </div>

@@ -3,10 +3,12 @@ import axios from "axios";
 import Loader from "./loader";
 import ProductCard from "./productCard";
 import ProductSkeleton from "./productSkeletion";
+import { useNavigate } from "react-router-dom";
 
 export default function Trending() {
   const [productList, setProductList] = useState([]);
   const [productLoaded, setProductLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!productLoaded) {
@@ -27,7 +29,12 @@ export default function Trending() {
     <div className="w-full   py-10 md:px-4 px-3 bg-primary">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold tracking-wide">Trending</h2>
-        <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-all">
+        <button
+          className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-all"
+          onClick={() => {
+            navigate("/products");
+          }}
+        >
           Shop All <span>→</span>
         </button>
       </div>

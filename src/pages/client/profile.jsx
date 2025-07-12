@@ -207,7 +207,7 @@ export default function Profile() {
             {
               icon: FaStar,
               label: "Review",
-              status: "Review",
+              path: "/reviews",
               color: "text-pink-600",
             },
             {
@@ -244,7 +244,7 @@ export default function Profile() {
             {
               icon: FaHistory,
               label: "Browsing History",
-              path: "/browsing-history",
+              path: "/history",
               desc: "View your recent products",
             },
             {

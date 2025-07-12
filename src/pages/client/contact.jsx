@@ -63,7 +63,7 @@ export default function Contact() {
           {/* Contact Info Cards */}
           <div className="lg:col-span-1 space-y-6">
             {/* WhatsApp Card */}
-            <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-103">
+            <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-101">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                   <MessageCircle className="w-6 h-6 text-white" />
@@ -71,19 +71,19 @@ export default function Contact() {
                 <div>
                   <h3 className="font-semibold text-gray-800">WhatsApp</h3>
                   <a
-                    href="https://wa.me/919999999999"
+                    href="https://wa.me/94752552137"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-green-600 hover:text-green-700 transition-colors"
                   >
-                    +91 99999 99999
+                    +94 75 255 2137
                   </a>
                 </div>
               </div>
             </div>
 
             {/* Phone Card */}
-            <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-103">
+            <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-101">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Phone className="w-6 h-6 text-white" />
@@ -91,17 +91,17 @@ export default function Contact() {
                 <div>
                   <h3 className="font-semibold text-gray-800">Phone</h3>
                   <a
-                    href="tel:+919999999999"
+                    href="tel:+94752552137"
                     className="text-blue-600 hover:text-blue-700 transition-colors"
                   >
-                    +91 99999 99999
+                    +94 75 255 2137
                   </a>
                 </div>
               </div>
             </div>
 
             {/* Location Card */}
-            <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-103">
+            <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:scale-101">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                   <MapPin className="w-6 h-6 text-white" />
@@ -109,9 +109,9 @@ export default function Contact() {
                 <div>
                   <h3 className="font-semibold text-gray-800">Location</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    123 Love Street, Cozy City,
+                    123, Main Street
                     <br />
-                    Happy State, 000000, India
+                    Colombo 00100 ,Sri Lanka
                   </p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ export default function Contact() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm outline-0"
+                      className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm outline-0"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -154,7 +154,7 @@ export default function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm outline-0"
+                      className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm outline-0"
                       placeholder="Enter your email address"
                     />
                   </div>
@@ -174,7 +174,7 @@ export default function Contact() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm outline-0"
+                    className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm outline-0"
                     placeholder="What's this about?"
                   />
                 </div>
@@ -193,7 +193,7 @@ export default function Contact() {
                     rows="5"
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm resize-none outline-0"
+                    className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm resize-none outline-0"
                     placeholder="Tell us more about your inquiry..."
                   />
                 </div>
@@ -204,7 +204,7 @@ export default function Contact() {
                 type="submit"
                 disabled={isSubmitting}
                 onClick={handleSubmit}
-                className="w-full bg-gradient-to-r from-accent to-accent-hover hover:bg-accent text-white font-medium py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-103 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                className="w-full bg-gradient-to-r from-accent to-accent-hover hover:bg-accent text-white font-medium py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-102 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
               >
                 {isSubmitting ? (
                   <>

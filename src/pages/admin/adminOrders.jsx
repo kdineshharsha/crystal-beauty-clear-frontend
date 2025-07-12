@@ -61,15 +61,22 @@ export default function AdminOrders() {
 
   // Filter orders by name, orderId, or email
   const filteredOrders = useMemo(() => {
-    if (!searchTerm.trim()) return orders;
-    return orders.filter((order) => {
+    let filtered = orders;
+
+    // Filter by search term
+    if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
-      return (
-        order.name.toLowerCase().includes(term) ||
-        order.orderId.toLowerCase().includes(term) ||
-        order.email.toLowerCase().includes(term)
-      );
-    });
+      filtered = orders.filter((order) => {
+        return (
+          order.name.toLowerCase().includes(term) ||
+          order.orderId.toLowerCase().includes(term) ||
+          order.email.toLowerCase().includes(term)
+        );
+      });
+    }
+
+    // Sort by created time (date) - newest first
+    return filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [orders, searchTerm]);
 
   // Pagination logic

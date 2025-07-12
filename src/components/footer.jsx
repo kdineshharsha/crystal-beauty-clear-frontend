@@ -41,7 +41,7 @@ export default function Footer() {
 
       <div className="relative">
         {/* Main Footer Content */}
-        <div className="pt-16 pb-8 px-6 sm:px-12">
+        <div className="pt-16  px-6 sm:px-12">
           <div className="max-w-7xl mx-auto">
             {/* Newsletter Section */}
             <div className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-white/10">
@@ -75,16 +75,9 @@ export default function Footer() {
             </div>
 
             {/* Main Footer Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div className="flex flex-wrap w-full justify-between gap-8 mb-12">
               {/* Brand & About */}
               <div className="lg:col-span-1">
-                <div className="mb-6">
-                  <img
-                    src="/logo.png"
-                    alt="Logo"
-                    className="w-40 mb-4 object-cover"
-                  />
-                </div>
                 <p className="text-gray-300 mb-6 leading-relaxed">
                   Embrace your natural beauty with our curated cosmetic products
                   made just for you. 🌸
@@ -104,7 +97,7 @@ export default function Footer() {
                   </div>
                 </div>
               </div>
-
+              {/* <div className="flex w-full justify-between "> */}
               {/* Navigation Links */}
               <div>
                 <h4 className="text-lg font-semibold mb-6 text-white relative">
@@ -196,6 +189,7 @@ export default function Footer() {
                   </li>
                 </ul>
               </div>
+              {/* </div> */}
 
               {/* Social Media */}
               <div>

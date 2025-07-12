@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import ProductCategory from "../../components/productCategory";
 import SocialShowcase from "../../components/socialShowCase";
 import AdPopupModal from "../../components/popup";
+import FeedbackCarousel from "../../components/feedbackCarousel";
 
 const categories = [
   { id: 1, title: "LIPS", image: "/assets/lips.jpeg" },
@@ -133,6 +134,7 @@ export default function MainPage() {
           </div>
         </div>
       </div>
+      <FeedbackCarousel />
 
       <Footer />
       <div className="fixed md:bottom-6 md:right-6 bottom-20 right-6 z-50 p-2 bg-white rounded-full shadow-lg">

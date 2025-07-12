@@ -182,8 +182,8 @@ export default function AdminDashboard() {
                   colors: ["#22c55e"],
                   xaxis: {
                     ...chartOptions.xaxis,
-                    categories: analytics.recentOrders.map((o) =>
-                      new Date(o.date).toLocaleDateString("en-US", {
+                    categories: analytics.revenuePerDay?.map((r) =>
+                      new Date(r._id).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                       })
@@ -202,7 +202,7 @@ export default function AdminDashboard() {
                 series={[
                   {
                     name: "Revenue",
-                    data: analytics.recentOrders.map((o) => o.total || 0),
+                    data: analytics.revenuePerDay?.map((r) => r.total || 0),
                   },
                 ]}
               />

@@ -61,7 +61,7 @@ export default function ProductOverview() {
   };
 
   return (
-    <div className="w-full h-full bg-amber-100">
+    <div className="w-full h-full bg-primary">
       {status === "loading" && <Loader />}
 
       {status === "loaded" && (
