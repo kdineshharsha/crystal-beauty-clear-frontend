@@ -506,6 +506,9 @@ export default function AdminOrders() {
                         Address
                       </h3>
                       <p className="text-sm text-gray-600">
+                        {displayingOrder.name}
+                      </p>
+                      <p className="text-sm text-gray-600">
                         {displayingOrder.address}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">

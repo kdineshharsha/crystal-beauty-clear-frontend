@@ -18,6 +18,8 @@ import {
 
 export default function Users() {
   const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+
   const [loaded, setLoaded] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -48,6 +50,15 @@ export default function Users() {
       });
   }, [page]);
 
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
+        params: { all: true },
+      })
+      .then((res) => setAllUsers(res.data.users))
+      .catch((err) => console.error("Error fetching all users:", err));
+  }, []);
+
   const toggleDisable = async (userId, currentStatus) => {
     try {
       await axios.patch(
@@ -64,17 +75,19 @@ export default function Users() {
     }
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      `${user.firstName} ${user.lastName}`
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredUsers = search
+    ? allUsers.filter(
+        (user) =>
+          `${user.firstName} ${user.lastName}`
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase())
+      )
+    : users;
 
   const exportToCSV = () => {
     const headers = ["First Name", "Last Name", "Email", "Role", "Status"];
-    const rows = filteredUsers.map((u) => [
+    const rows = allUsers.map((u) => [
       u.firstName,
       u.lastName,
       u.email,
@@ -155,7 +168,7 @@ export default function Users() {
                     <div>
                       <p className="text-sm opacity-90">Total Users</p>
                       <p className="text-2xl font-bold">
-                        {filteredUsers.length}
+                        <p className="text-2xl font-bold">{allUsers.length}</p>
                       </p>
                     </div>
                   </div>
@@ -166,7 +179,7 @@ export default function Users() {
                     <div>
                       <p className="text-sm opacity-90">Active Users</p>
                       <p className="text-2xl font-bold">
-                        {filteredUsers.filter((u) => !u.isDisabled).length}
+                        {allUsers.filter((u) => !u.isDisabled).length}
                       </p>
                     </div>
                   </div>
@@ -177,7 +190,7 @@ export default function Users() {
                     <div>
                       <p className="text-sm opacity-90">Disabled Users</p>
                       <p className="text-2xl font-bold">
-                        {filteredUsers.filter((u) => u.isDisabled).length}
+                        {allUsers.filter((u) => u.isDisabled).length}
                       </p>
                     </div>
                   </div>
@@ -188,7 +201,7 @@ export default function Users() {
                     <div>
                       <p className="text-sm opacity-90">Admins</p>
                       <p className="text-2xl font-bold">
-                        {filteredUsers.filter((u) => u.role === "admin").length}
+                        {allUsers.filter((u) => u.role === "admin").length}
                       </p>
                     </div>
                   </div>
