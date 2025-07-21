@@ -35,7 +35,7 @@ export default function AdPopupModal() {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className={`bg-white rounded-3xl overflow-hidden shadow-2xl max-w-md w-full relative transform transition-all duration-300 ${
+        className={`bg-white rounded-3xl overflow-hidden shadow-2xl max-w-md   relative transform transition-all duration-300 ${
           isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"
         }`}
       >
@@ -55,7 +55,7 @@ export default function AdPopupModal() {
           <img
             src={ad.imageUrl}
             alt={ad.title}
-            className="w-full h-64 object-cover"
+            className="w-full h-50 sm:h-64 object-cover"
           />
           {/* Overlay gradient */}
           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/30 to-transparent"></div>

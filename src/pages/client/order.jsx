@@ -339,7 +339,7 @@ export default function Order() {
                     {filteredOrders.map((order) => (
                       <div
                         key={order.orderId}
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer transform hover:scale-103"
+                        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer transform hover:scale-103 flex flex-col h-full"
                       >
                         {/* Order Header */}
                         <div className="p-6 border-b border-gray-100">
@@ -385,7 +385,7 @@ export default function Order() {
                         </div>
 
                         {/* Order Items Preview */}
-                        <div className="p-6">
+                        <div className="p-6 flex-grow">
                           <h3 className="text-sm font-semibold text-gray-700 mb-3">
                             Items ({order.billItems.length})
                           </h3>
@@ -432,8 +432,8 @@ export default function Order() {
                           </div>
                         </div>
 
-                        {/* View Details Button */}
-                        <div className="px-6 pb-6 flex justify-end items-center gap-3">
+                        {/* View Details Button - Always at bottom */}
+                        <div className="px-6 pb-6 mt-auto flex justify-end items-center gap-3">
                           <button
                             className="w-full bg-gradient-to-r from-accent to-accent-hover hover:bg-accent-hover text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-103 shadow-lg"
                             onClick={() => {

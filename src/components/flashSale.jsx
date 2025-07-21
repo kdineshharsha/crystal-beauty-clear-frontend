@@ -39,13 +39,13 @@ export default function FlashSale() {
       <div className="w-full   py-6 ">
         <div className="flex flex-nowrap justify-between  items-center mb-6"></div>
         {productLoaded ? (
-          <div className="w-full h-full flex flex-nowrap overflow-x-scroll gap-4 p-2 scrollbar-hide items-center">
+          <div className="w-full h-full flex flex-nowrap overflow-x-scroll gap-4 p-2 scrollbar-hide items-center lg:justify-center">
             {productList.slice(0, 6).map((product, index) => (
               <ProductCard key={index} product={product} />
             ))}
           </div>
         ) : (
-          <div className="w-full h-full flex flex-nowrap gap-4 overflow-x-scroll scrollbar-hide  ">
+          <div className="w-full h-full flex flex-nowrap gap-4 overflow-x-scroll scrollbar-hide lg:justify-center ">
             {[...Array(5)].map((_, i) => (
               <ProductSkeleton key={i} />
             ))}

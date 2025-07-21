@@ -26,7 +26,7 @@ export default function WhatsNew() {
   }, [productLoaded]);
 
   return (
-    <div className="w-full  bg-red-200 py-10 md:px-4 px-3">
+    <div className="w-full  bg-red-200 py-10 md:px-4 px-3 ">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold tracking-wide">New Arrivals</h2>
         <button
@@ -39,13 +39,13 @@ export default function WhatsNew() {
         </button>
       </div>
       {productLoaded ? (
-        <div className="w-full h-full flex flex-nowrap overflow-x-scroll gap-4 p-2 scrollbar-hide items-center">
+        <div className="w-full h-full flex flex-nowrap overflow-x-scroll gap-4 p-2 scrollbar-hide items-center lg:justify-center">
           {productList.slice(0, 5).map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
         </div>
       ) : (
-        <div className="w-full h-full flex flex-nowrap gap-4 overflow-x-scroll scrollbar-hide  ">
+        <div className="w-full h-full flex flex-nowrap gap-4 overflow-x-scroll scrollbar-hide lg:justify-center ">
           {[...Array(5)].map((_, i) => (
             <ProductSkeleton key={i} />
           ))}
